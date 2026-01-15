@@ -2,1212 +2,289 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fraction Feast - Equivalent Fractions Practice</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Fraction Chef: Equivalent Fractions</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+        :root {
+            --primary: #ff7e5f;
+            --success: #2ecc71;
+            --dark: #2c3e50;
         }
-        
+
         body {
-            font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
-            background: linear-gradient(to bottom right, #fff9c4, #ffecb3);
-            color: #5d4037;
-            padding: 20px;
+            font-family: 'Comic Sans MS', cursive;
+            background: #f0f2f5;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             min-height: 100vh;
+            touch-action: manipulation;
         }
-        
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-            background-color: white;
-            border-radius: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            padding: 30px;
-            position: relative;
-            overflow: hidden;
-            border: 8px solid #ff9800;
-        }
-        
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            background: linear-gradient(to right, #ff5722, #ff9800);
-            border-radius: 15px;
-            padding: 20px;
-            color: white;
-            box-shadow: 0 5px 15px rgba(255, 87, 34, 0.3);
-        }
-        
-        h1 {
-            color: white;
-            font-size: 3rem;
-            text-shadow: 3px 3px 0 #e65100;
-            margin-bottom: 10px;
-            letter-spacing: 1px;
-        }
-        
-        .subtitle {
-            color: #fff3e0;
-            font-size: 1.4rem;
-            font-weight: bold;
-        }
-        
-        .controls {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 20px;
-            margin-bottom: 30px;
-            background-color: #fff8e1;
-            padding: 20px;
-            border-radius: 15px;
-            border: 4px solid #4caf50;
-        }
-        
-        .difficulty-selector {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            flex: 1;
-        }
-        
-        .difficulty-selector label {
-            font-weight: bold;
-            color: #d84315;
-            font-size: 1.2rem;
-            white-space: nowrap;
-        }
-        
-        select {
-            padding: 12px 20px;
-            border-radius: 12px;
-            border: 3px solid #2196f3;
-            background-color: white;
-            font-weight: bold;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            flex: 1;
-            max-width: 300px;
-        }
-        
-        select:hover {
-            background-color: #e3f2fd;
-            transform: translateY(-2px);
-        }
-        
-        .navigation {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-        }
-        
-        button {
-            padding: 14px 28px;
-            border-radius: 12px;
-            border: none;
-            font-weight: bold;
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        }
-        
-        button:active {
-            transform: translateY(2px);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-        
-        .btn-prev {
-            background-color: #ff9800;
-            color: white;
-        }
-        
-        .btn-prev:hover {
-            background-color: #f57c00;
-        }
-        
-        .btn-next {
-            background-color: #4caf50;
-            color: white;
-        }
-        
-        .btn-next:hover {
-            background-color: #388e3c;
-        }
-        
-        .btn-check {
-            background-color: #2196f3;
-            color: white;
-            margin: 25px auto;
-            display: block;
-            width: 250px;
-            justify-content: center;
-            font-size: 1.3rem;
-            padding: 16px 30px;
-        }
-        
-        .btn-check:hover {
-            background-color: #1976d2;
-        }
-        
-        .btn-check:disabled {
-            background-color: #b0bec5;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-        
-        .question-container {
-            background-color: #f1f8e9;
-            border-radius: 20px;
-            padding: 30px;
-            margin-bottom: 30px;
-            border: 5px dashed #ff9800;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .question-container::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 10px;
-            background: linear-gradient(to right, #ff5722, #ff9800, #4caf50, #2196f3);
-        }
-        
-        .question-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-        
-        .question-title {
-            font-size: 1.8rem;
-            color: #2196f3;
+
+        .header {
             background: white;
-            padding: 10px 20px;
-            border-radius: 10px;
-            border: 3px solid #2196f3;
-        }
-        
-        .base-fraction {
-            font-size: 3rem;
-            font-weight: bold;
-            color: #ff5722;
-            background-color: white;
-            padding: 15px 30px;
-            border-radius: 15px;
-            border: 5px solid #ff9800;
-            display: inline-block;
-            margin: 10px 0;
-            box-shadow: 0 5px 15px rgba(255, 87, 34, 0.3);
-        }
-        
-        .instructions {
-            font-size: 1.3rem;
-            margin-bottom: 30px;
-            color: #5d4037;
-            line-height: 1.6;
-            background: white;
-            padding: 15px 20px;
-            border-radius: 10px;
-            border-left: 6px solid #4caf50;
-        }
-        
-        .visual-area {
+            width: 100%;
+            padding: 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             display: flex;
             justify-content: space-around;
-            flex-wrap: wrap;
-            gap: 30px;
-            margin: 30px 0;
-        }
-        
-        .fraction-item {
-            text-align: center;
-            background: white;
-            padding: 25px;
-            border-radius: 20px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-            flex: 1;
-            min-width: 250px;
-            max-width: 320px;
-            border: 3px solid #ffcc80;
-            transition: transform 0.3s;
-        }
-        
-        .fraction-item:hover {
-            transform: translateY(-5px);
-        }
-        
-        .fraction-item h3 {
-            color: #d84315;
-            margin-bottom: 20px;
-            font-size: 1.4rem;
-            background: #fff3e0;
-            padding: 10px;
-            border-radius: 8px;
-        }
-        
-        .shape-container {
-            margin: 20px 0;
-            position: relative;
-            height: 200px;
-            display: flex;
-            justify-content: center;
             align-items: center;
-            border-radius: 15px;
-            overflow: hidden;
-            border: 4px solid #795548;
-            background-color: #f5f5f5;
+            flex-wrap: wrap;
         }
-        
-        .circle-svg, .square-svg {
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 2;
+
+        .difficulty-select {
+            padding: 10px;
+            border-radius: 20px;
+            border: 2px solid var(--primary);
         }
-        
-        .circle-bg, .square-bg, .image-bg {
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
+
+        .app-container {
+            max-width: 1000px;
+            width: 95%;
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .visual-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .fraction-card {
+            background: white;
+            padding: 20px;
+            border-radius: 20px;
+            border: 4px solid #eee;
+            position: relative;
+        }
+
+        .shape-container {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 15px;
+            position: relative;
             background-size: cover;
             background-position: center;
-            background-repeat: no-repeat;
-            z-index: 1;
-        }
-        
-        .circle-bg {
             border-radius: 50%;
         }
-        
-        .slice {
-            fill: transparent;
-            stroke: #333;
-            stroke-width: 4;
-            transition: fill 0.3s;
-            cursor: pointer;
-        }
-        
-        .slice.active {
-            fill: rgba(76, 175, 80, 0.6);
-        }
-        
-        .slice.highlight {
-            stroke: #ff5722;
-            stroke-width: 5;
-        }
-        
-        .square-slice {
-            fill: transparent;
-            stroke: #333;
-            stroke-width: 4;
-            transition: fill 0.3s;
-            cursor: pointer;
-        }
-        
-        .square-slice.active {
-            fill: rgba(255, 152, 0, 0.6);
-        }
-        
-        .square-slice.highlight {
-            stroke: #ff5722;
-            stroke-width: 5;
-        }
-        
-        .fraction-input-container {
-            margin-top: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
-        }
-        
-        .fraction-input-label {
-            font-size: 1.4rem;
-            font-weight: bold;
-            color: #5d4037;
-        }
-        
-        .fraction-input {
-            width: 120px;
-            padding: 12px;
-            font-size: 1.6rem;
-            text-align: center;
-            border: 4px solid #ccc;
-            border-radius: 10px;
-            font-weight: bold;
-            background: white;
-        }
-        
-        .fraction-input.correct {
-            border-color: #4caf50;
-            background-color: #e8f5e9;
-            color: #2e7d32;
-        }
-        
-        .fraction-input.wrong {
-            border-color: #f44336;
-            background-color: #ffebee;
-            color: #c62828;
-        }
-        
-        .feedback {
-            text-align: center;
-            padding: 20px;
-            border-radius: 15px;
-            font-size: 1.4rem;
-            font-weight: bold;
-            margin-top: 25px;
-            min-height: 70px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.5s;
-        }
-        
-        .feedback.correct {
-            background-color: #e8f5e9;
-            color: #2e7d32;
-            border: 4px solid #4caf50;
-            animation: pulse 1.5s infinite;
-        }
-        
-        .feedback.incorrect {
-            background-color: #ffebee;
-            color: #c62828;
-            border: 4px solid #f44336;
-        }
-        
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.02); }
-            100% { transform: scale(1); }
-        }
-        
-        .progress {
-            display: flex;
-            justify-content: center;
-            margin-top: 30px;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-        
-        .progress-dot {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background-color: #ccc;
-            cursor: pointer;
-            transition: all 0.3s;
-            border: 3px solid white;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-        
-        .progress-dot.active {
-            background-color: #4caf50;
-            transform: scale(1.3);
-        }
-        
-        .progress-dot.completed {
-            background-color: #2196f3;
-        }
-        
-        .progress-dot.unlocked {
-            background-color: #ff9800;
-        }
-        
-        .food-label {
+
+        .shape-container.square { border-radius: 10px; }
+
+        .fraction-overlay {
             position: absolute;
-            bottom: 10px;
+            top: 0;
             left: 0;
-            right: 0;
+            z-index: 100;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .slice {
+            fill: rgba(255, 255, 255, 0.1);
+            stroke: rgba(0,0,0,0.4);
+            stroke-width: 1.5;
+            transition: 0.2s;
+            pointer-events: all;
+        }
+
+        .slice:hover { fill: rgba(255, 255, 255, 0.4); }
+
+        .slice.active {
+            fill: rgba(255, 215, 0, 0.7) !important;
+            stroke: #d35400;
+            stroke-width: 3;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 1.5rem;
+        }
+
+        .fraction-input {
+            width: 60px;
             text-align: center;
-            font-weight: bold;
-            color: white;
-            background-color: rgba(0,0,0,0.6);
-            padding: 5px;
-            border-radius: 5px;
-            font-size: 1.1rem;
-            z-index: 3;
+            font-size: 1.5rem;
+            border: 3px solid #ddd;
+            border-radius: 8px;
         }
+
+        .fraction-line { width: 70px; height: 3px; background: #333; margin: 5px 0; }
+
+        .btn-check { background: var(--success); color: white; padding: 15px 30px; border-radius: 50px; border: none; font-size: 1.2rem; cursor: pointer; margin-top: 20px; }
         
-        footer {
-            text-align: center;
-            margin-top: 30px;
-            color: #795548;
-            font-size: 1rem;
-            border-top: 3px solid #ffcc80;
-            padding-top: 20px;
-        }
-        
-        .hint {
-            text-align: center;
-            margin-top: 15px;
-            font-style: italic;
-            color: #ff9800;
-            font-size: 1.1rem;
-        }
-        
-        @media (max-width: 900px) {
-            .visual-area {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .fraction-item {
-                width: 100%;
-                max-width: 400px;
-            }
-            
-            .controls {
-                flex-direction: column;
-            }
-            
-            .difficulty-selector {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            select {
-                max-width: 100%;
-                width: 100%;
-            }
-            
-            h1 {
-                font-size: 2.2rem;
-            }
-        }
-        
-        @media (max-width: 600px) {
-            .container {
-                padding: 20px;
-            }
-            
-            .question-header {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .fraction-input-container {
-                flex-direction: column;
-                gap: 10px;
-            }
-            
-            h1 {
-                font-size: 1.8rem;
-            }
-            
-            .base-fraction {
-                font-size: 2.2rem;
-                padding: 10px 20px;
-            }
-        }
+        .correct-anim { border-color: var(--success) !important; background: #e8f8f5; }
+        .wrong-anim { border-color: #e74c3c !important; background: #fdedec; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>🍕 Fraction Feast 🍪</h1>
-            <div class="subtitle">Slice, Share, and Learn Equivalent Fractions!</div>
-        </header>
-        
-        <div class="controls">
-            <div class="difficulty-selector">
-                <label for="difficulty">🎚️ Difficulty Level:</label>
-                <select id="difficulty">
-                    <option value="easy">Easy (Like slicing a pizza!)</option>
-                    <option value="medium" selected>Medium (Cookie sharing time!)</option>
-                    <option value="hard">Hard (Brownie pan challenge!)</option>
-                </select>
-            </div>
-            
-            <div class="navigation">
-                <button class="btn-prev" id="prevBtn">⬅ Previous</button>
-                <button class="btn-next" id="nextBtn" disabled>Next ➡</button>
-            </div>
-        </div>
-        
-        <div class="question-container">
-            <div class="question-header">
-                <div class="question-title">Question <span id="questionNum">1</span> of <span id="totalQuestions">5</span></div>
-                <div class="base-fraction" id="baseFraction">1/2</div>
-            </div>
-            
-            <div class="instructions" id="instructions">
-                Click on the slices to select them, then type the equivalent fraction in the box. Match the colored slices to the fraction!
-            </div>
-            
-            <div class="visual-area" id="visualArea">
-                <!-- Visuals will be generated here -->
-            </div>
-            
-            <div class="hint" id="hint">
-                💡 Hint: Equivalent fractions have the same value, like 1/2 = 2/4 = 3/6
-            </div>
-            
-            <button class="btn-check" id="checkBtn">Check My Answers 🍴</button>
-            
-            <div class="feedback" id="feedback">
-                Select slices and fill in fractions to check your answers!
-            </div>
-        </div>
-        
-        <div class="progress" id="progressDots">
-            <!-- Progress dots will be generated here -->
-        </div>
-        
-        <footer>
-            <p>Fraction Feast - A delicious way to learn equivalent fractions! 🍕🍪🍫</p>
-            <p>Click on food slices to select them. Fill in fractions to match what you've selected.</p>
-        </footer>
-    </div>
 
-    <script>
-        // Food image database
-        const foodImages = {
-            pizza: 'pizza.png',
-            cookie: 'cookie.png',
-            brownie: 'browniepan.png'
-        };
+<div class="header">
+    <h1 id="rank-display">🍕 Kitchen Helper</h1>
+    <select class="difficulty-select" id="diff-select" onchange="initGame()">
+        <option value="easy">Easy</option>
+        <option value="medium">Medium</option>
+        <option value="hard">Hard</option>
+    </select>
+</div>
+
+<div class="app-container">
+    <div id="target-text" style="font-size: 1.5rem; margin-bottom: 20px;"></div>
+    <div class="visual-grid" id="visual-grid"></div>
+    <div id="feedback-msg" style="margin-top: 20px; font-weight: bold; height: 30px;"></div>
+    <button class="btn-check" onclick="validate()">Check My Cooking!</button>
+    <button id="next-btn" style="display:none; background:var(--primary); color:white; padding: 15px 30px; border-radius:50px; border:none; margin-top:20px; cursor:pointer;" onclick="initGame()">Next Order →</button>
+</div>
+
+<script>
+    const assets = [
+        { type: 'circle', img: 'pizza.png' },
+        { type: 'circle', img: 'cookie.png' },
+        { type: 'square', img: 'browniepan.png' }
+    ];
+
+    let currentQuestion = {};
+    let score = 0;
+
+    function initGame() {
+        document.getElementById('diff-select').blur();
+        document.getElementById('next-btn').style.display = 'none';
+        document.getElementById('feedback-msg').innerHTML = "";
+        generateRandomQuestion();
+    }
+
+    function generateRandomQuestion() {
+        const diff = document.getElementById('diff-select').value;
+        const denoms = { easy: [2, 4, 8], medium: [3, 6, 9, 12], hard: [4, 5, 8, 10, 12, 16] }[diff];
         
-        // Question database with different base fractions and food types
-        const questionDatabase = {
-            easy: [
-                { baseFraction: "1/2", denominators: [4, 6, 8], shapes: ["circle", "circle", "square"], foods: ["pizza", "cookie", "brownie"] },
-                { baseFraction: "1/3", denominators: [6, 9, 12], shapes: ["circle", "square", "circle"], foods: ["cookie", "brownie", "pizza"] },
-                { baseFraction: "1/4", denominators: [8, 12, 16], shapes: ["square", "circle", "square"], foods: ["brownie", "pizza", "brownie"] },
-                { baseFraction: "2/3", denominators: [6, 9, 12], shapes: ["circle", "circle", "square"], foods: ["pizza", "cookie", "brownie"] },
-                { baseFraction: "3/4", denominators: [8, 12, 16], shapes: ["square", "circle", "circle"], foods: ["brownie", "pizza", "cookie"] }
-            ],
-            medium: [
-                { baseFraction: "2/5", denominators: [10, 15, 20], shapes: ["circle", "square", "circle"], foods: ["cookie", "brownie", "pizza"] },
-                { baseFraction: "3/5", denominators: [10, 15, 20], shapes: ["square", "circle", "square"], foods: ["brownie", "pizza", "brownie"] },
-                { baseFraction: "2/7", denominators: [14, 21, 28], shapes: ["circle", "circle", "square"], foods: ["pizza", "cookie", "brownie"] },
-                { baseFraction: "3/8", denominators: [16, 24, 32], shapes: ["square", "circle", "square"], foods: ["brownie", "cookie", "brownie"] },
-                { baseFraction: "5/6", denominators: [12, 18, 24], shapes: ["circle", "square", "circle"], foods: ["pizza", "brownie", "cookie"] }
-            ],
-            hard: [
-                { baseFraction: "3/7", denominators: [14, 21, 28], shapes: ["circle", "square", "circle"], foods: ["cookie", "brownie", "pizza"] },
-                { baseFraction: "4/9", denominators: [18, 27, 36], shapes: ["square", "circle", "square"], foods: ["brownie", "pizza", "brownie"] },
-                { baseFraction: "5/11", denominators: [22, 33, 44], shapes: ["circle", "circle", "square"], foods: ["pizza", "cookie", "brownie"] },
-                { baseFraction: "7/12", denominators: [24, 36, 48], shapes: ["square", "circle", "square"], foods: ["brownie", "cookie", "brownie"] },
-                { baseFraction: "8/15", denominators: [30, 45, 60], shapes: ["circle", "square", "circle"], foods: ["pizza", "brownie", "cookie"] }
+        const d1 = denoms[Math.floor(Math.random() * denoms.length)];
+        const n1 = Math.ceil(Math.random() * (d1 - 1));
+        const ratio = n1 / d1;
+
+        let possible = [];
+        for(let i=2; i<=16; i++) {
+            if (Math.abs((i * ratio) - Math.round(i * ratio)) < 0.01) possible.push(i);
+        }
+        
+        const d2 = possible[Math.floor(Math.random() * possible.length)] || d1;
+        const d3 = possible[Math.floor(Math.random() * possible.length)] || d1;
+
+        currentQuestion = {
+            target: { n: n1, d: d1 },
+            options: [
+                { d: d1, n_correct: Math.round(ratio * d1) },
+                { d: d2, n_correct: Math.round(ratio * d2) },
+                { d: d3, n_correct: Math.round(ratio * d3) }
             ]
         };
+        renderQuestion();
+    }
 
-        // App state
-        let currentDifficulty = 'medium';
-        let currentQuestionIndex = 0;
-        let questions = [];
-        let userAnswers = [];
-        let completedQuestions = new Set();
-        const totalQuestions = 5;
+    function renderQuestion() {
+        const grid = document.getElementById('visual-grid');
+        grid.innerHTML = "";
+        document.getElementById('target-text').innerHTML = `Make 3 trays equal to <strong>${currentQuestion.target.n}/${currentQuestion.target.d}</strong>`;
 
-        // DOM elements
-        const difficultySelect = document.getElementById('difficulty');
-        const prevBtn = document.getElementById('prevBtn');
-        const nextBtn = document.getElementById('nextBtn');
-        const checkBtn = document.getElementById('checkBtn');
-        const questionNumEl = document.getElementById('questionNum');
-        const totalQuestionsEl = document.getElementById('totalQuestions');
-        const baseFractionEl = document.getElementById('baseFraction');
-        const instructionsEl = document.getElementById('instructions');
-        const visualAreaEl = document.getElementById('visualArea');
-        const feedbackEl = document.getElementById('feedback');
-        const progressDotsEl = document.getElementById('progressDots');
-        const hintEl = document.getElementById('hint');
+        currentQuestion.options.forEach((opt, index) => {
+            const asset = assets[index % assets.length];
+            const card = document.createElement('div');
+            card.className = 'fraction-card';
+            card.id = `card-${index}`;
 
-        // Initialize the app
-        function init() {
-            // Load questions for current difficulty
-            loadQuestions();
-            
-            // Display first question
-            displayQuestion(currentQuestionIndex);
-            
-            // Set up event listeners
-            difficultySelect.addEventListener('change', handleDifficultyChange);
-            prevBtn.addEventListener('click', goToPreviousQuestion);
-            nextBtn.addEventListener('click', goToNextQuestion);
-            checkBtn.addEventListener('click', checkAnswers);
-            
-            // Initialize progress dots
-            updateProgressDots();
-            
-            // Set up image fallbacks in case images don't load
-            setupImageFallbacks();
-        }
+            const shapeCont = document.createElement('div');
+            shapeCont.className = `shape-container ${asset.type}`;
+            shapeCont.style.backgroundImage = `url('${asset.img}')`;
+            shapeCont.style.backgroundColor = '#eee';
 
-        // Load questions based on difficulty
-        function loadQuestions() {
-            // Get questions for current difficulty
-            const difficultyQuestions = questionDatabase[currentDifficulty];
-            
-            // Shuffle the questions
-            questions = [...difficultyQuestions].sort(() => Math.random() - 0.5);
-            
-            // Take only the number of questions we need
-            questions = questions.slice(0, totalQuestions);
-            
-            // Reset user answers
-            userAnswers = new Array(totalQuestions).fill().map(() => ({
-                inputs: [],
-                visuals: []
-            }));
-            
-            // Reset completed questions
-            completedQuestions.clear();
-            
-            // Reset UI
-            currentQuestionIndex = 0;
-            updateNavigationButtons();
-        }
+            const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            svg.setAttribute("viewBox", "0 0 100 100");
+            svg.className.baseVal = "fraction-overlay";
 
-        // Display a question by index
-        function displayQuestion(index) {
-            if (index < 0 || index >= questions.length) return;
-            
-            const question = questions[index];
-            currentQuestionIndex = index;
-            
-            // Update UI elements
-            questionNumEl.textContent = index + 1;
-            totalQuestionsEl.textContent = totalQuestions;
-            baseFractionEl.textContent = question.baseFraction;
-            
-            // Update hint based on difficulty
-            updateHint();
-            
-            // Clear previous visuals
-            visualAreaEl.innerHTML = '';
-            
-            // Get the base fraction values
-            const [baseNum, baseDen] = question.baseFraction.split('/').map(Number);
-            
-            // Create visual items for each denominator
-            question.denominators.forEach((denominator, i) => {
-                const shapeType = question.shapes[i];
-                const foodType = question.foods[i];
-                const expectedNumerator = (baseNum * denominator) / baseDen;
-                
-                // Create fraction item container
-                const fractionItem = document.createElement('div');
-                fractionItem.className = 'fraction-item';
-                fractionItem.dataset.index = i;
-                
-                // Create title
-                const title = document.createElement('h3');
-                title.textContent = `Equivalent to ${question.baseFraction}`;
-                fractionItem.appendChild(title);
-                
-                // Create shape container
-                const shapeContainer = document.createElement('div');
-                shapeContainer.className = 'shape-container';
-                
-                // Create food label
-                const foodLabel = document.createElement('div');
-                foodLabel.className = 'food-label';
-                foodLabel.textContent = getFoodName(foodType);
-                shapeContainer.appendChild(foodLabel);
-                
-                // Create the appropriate visual based on shape type
-                if (shapeType === 'circle') {
-                    // Create background image
-                    const bgDiv = document.createElement('div');
-                    bgDiv.className = 'circle-bg';
-                    bgDiv.style.backgroundImage = `url('${foodImages[foodType]}')`;
-                    shapeContainer.appendChild(bgDiv);
-                    
-                    // Create SVG overlay
-                    shapeContainer.innerHTML += createCircleVisual(denominator);
-                } else if (shapeType === 'square') {
-                    // Create background image
-                    const bgDiv = document.createElement('div');
-                    bgDiv.className = 'square-bg';
-                    bgDiv.style.backgroundImage = `url('${foodImages[foodType]}')`;
-                    shapeContainer.appendChild(bgDiv);
-                    
-                    // Create SVG overlay
-                    shapeContainer.innerHTML += createSquareVisual(denominator);
-                }
-                
-                fractionItem.appendChild(shapeContainer);
-                
-                // Create input for fraction
-                const inputContainer = document.createElement('div');
-                inputContainer.className = 'fraction-input-container';
-                
-                const inputLabel = document.createElement('div');
-                inputLabel.className = 'fraction-input-label';
-                inputLabel.textContent = 'Fraction:';
-                inputContainer.appendChild(inputLabel);
-                
-                const input = document.createElement('input');
-                input.type = 'text';
-                input.className = 'fraction-input';
-                input.placeholder = `?/${denominator}`;
-                input.dataset.index = i;
-                input.dataset.denominator = denominator;
-                input.dataset.expected = `${expectedNumerator}/${denominator}`;
-                
-                // Restore previous answer if exists
-                if (userAnswers[index] && userAnswers[index].inputs[i] !== undefined) {
-                    input.value = userAnswers[index].inputs[i];
-                    if (userAnswers[index].inputs[i] === `${expectedNumerator}/${denominator}`) {
-                        input.classList.add('correct');
-                    }
-                }
-                
-                inputContainer.appendChild(input);
-                fractionItem.appendChild(inputContainer);
-                
-                visualAreaEl.appendChild(fractionItem);
-            });
-            
-            // Add click handlers for slices
-            setTimeout(() => {
-                const fractionItems = document.querySelectorAll('.fraction-item');
-                
-                fractionItems.forEach((item, i) => {
-                    const shapeType = question.shapes[i];
-                    const denominator = question.denominators[i];
-                    
-                    if (shapeType === 'circle') {
-                        const slices = item.querySelectorAll('.slice');
-                        slices.forEach((slice, sliceIndex) => {
-                            slice.addEventListener('click', () => {
-                                handleSliceClick(slice, sliceIndex, i, index, denominator, shapeType);
-                            });
-                            
-                            // Restore previous visual state
-                            if (userAnswers[index] && 
-                                userAnswers[index].visuals[i] && 
-                                userAnswers[index].visuals[i].includes(sliceIndex)) {
-                                slice.classList.add('active');
-                            }
-                        });
-                    } else if (shapeType === 'square') {
-                        const slices = item.querySelectorAll('.square-slice');
-                        slices.forEach((slice, sliceIndex) => {
-                            slice.addEventListener('click', () => {
-                                handleSliceClick(slice, sliceIndex, i, index, denominator, shapeType);
-                            });
-                            
-                            // Restore previous visual state
-                            if (userAnswers[index] && 
-                                userAnswers[index].visuals[i] && 
-                                userAnswers[index].visuals[i].includes(sliceIndex)) {
-                                slice.classList.add('active');
-                            }
-                        });
-                    }
-                    
-                    // Add input handler
-                    const input = item.querySelector('.fraction-input');
-                    input.addEventListener('input', () => handleInputChange(input, i, index, denominator));
-                });
-            }, 10);
-            
-            // Update feedback based on current state
-            updateFeedback(index);
-            
-            // Update progress dots
-            updateProgressDots();
-            
-            // Update navigation buttons
-            updateNavigationButtons();
-        }
+            if(asset.type === 'circle') createCircleSlices(svg, opt.d);
+            else createSquareSlices(svg, opt.d);
 
-        // Create circle visual with SVG
-        function createCircleVisual(denominator) {
-            const size = 200;
-            const radius = size / 2;
-            const center = radius;
-            
-            let slicesHTML = '';
-            
-            for (let i = 0; i < denominator; i++) {
-                const startAngle = (i * 2 * Math.PI) / denominator;
-                const endAngle = ((i + 1) * 2 * Math.PI) / denominator;
-                
-                const x1 = center + radius * Math.sin(startAngle);
-                const y1 = center - radius * Math.cos(startAngle);
-                const x2 = center + radius * Math.sin(endAngle);
-                const y2 = center - radius * Math.cos(endAngle);
-                
-                const largeArc = (endAngle - startAngle) > Math.PI ? 1 : 0;
-                
-                slicesHTML += `
-                    <path class="slice" 
-                          d="M ${center} ${center} L ${x1} ${y1} A ${radius} ${radius} 0 ${largeArc} 1 ${x2} ${y2} Z"
-                          data-index="${i}">
-                    </path>
-                `;
-            }
-            
-            return `
-                <svg class="circle-svg" viewBox="0 0 ${size} ${size}" width="${size}" height="${size}">
-                    ${slicesHTML}
-                </svg>
+            shapeCont.appendChild(svg);
+            card.appendChild(shapeCont);
+
+            const inputGroup = document.createElement('div');
+            inputGroup.className = 'input-group';
+            inputGroup.innerHTML = `
+                <input type="number" class="fraction-input" id="input-${index}">
+                <div class="fraction-line"></div>
+                <div style="color:var(--primary); font-weight:bold">${opt.d}</div>
             `;
-        }
+            card.appendChild(inputGroup);
+            grid.appendChild(card);
+        });
+    }
 
-        // Create square visual with SVG
-        function createSquareVisual(denominator) {
-            const size = 200;
-            
-            // Determine grid layout for the square
-            let rows, cols;
-            if (denominator <= 4) {
-                rows = 1;
-                cols = denominator;
-            } else if (denominator <= 9) {
-                rows = 3;
-                cols = Math.ceil(denominator / 3);
-            } else if (denominator <= 16) {
-                rows = 4;
-                cols = Math.ceil(denominator / 4);
-            } else {
-                rows = 5;
-                cols = Math.ceil(denominator / 5);
-            }
-            
-            const cellWidth = size / cols;
-            const cellHeight = size / rows;
-            
-            let slicesHTML = '';
-            let cellIndex = 0;
-            
-            for (let row = 0; row < rows; row++) {
-                for (let col = 0; col < cols; col++) {
-                    if (cellIndex >= denominator) break;
-                    
-                    const x = col * cellWidth;
-                    const y = row * cellHeight;
-                    
-                    slicesHTML += `
-                        <rect class="square-slice" 
-                              x="${x}" y="${y}" 
-                              width="${cellWidth}" height="${cellHeight}"
-                              data-index="${cellIndex}">
-                        </rect>
-                    `;
-                    
-                    cellIndex++;
-                }
-            }
-            
-            return `
-                <svg class="square-svg" viewBox="0 0 ${size} ${size}" width="${size}" height="${size}">
-                    ${slicesHTML}
-                </svg>
-            `;
-        }
+    function handleInteraction(el) {
+        el.classList.toggle('active');
+    }
 
-        // Handle slice clicks (for circles and squares)
-        function handleSliceClick(slice, sliceIndex, visualIndex, questionIndex, denominator, shapeType) {
-            // Toggle active state
-            slice.classList.toggle('active');
-            
-            // Initialize user answers for this question if needed
-            if (!userAnswers[questionIndex]) {
-                userAnswers[questionIndex] = { inputs: [], visuals: [] };
-            }
-            if (!userAnswers[questionIndex].visuals[visualIndex]) {
-                userAnswers[questionIndex].visuals[visualIndex] = [];
-            }
-            
-            // Update user's visual answer
-            const visualAnswers = userAnswers[questionIndex].visuals[visualIndex];
-            const indexInArray = visualAnswers.indexOf(sliceIndex);
-            
-            if (indexInArray > -1) {
-                // Remove from array if already selected
-                visualAnswers.splice(indexInArray, 1);
-            } else {
-                // Add to array if not selected
-                visualAnswers.push(sliceIndex);
-            }
-            
-            // Sort the array
-            visualAnswers.sort((a, b) => a - b);
-            
-            // Update the corresponding input field
-            const fractionItem = document.querySelector(`.fraction-item[data-index="${visualIndex}"]`);
-            const input = fractionItem.querySelector('.fraction-input');
-            if (input) {
-                input.value = visualAnswers.length > 0 ? `${visualAnswers.length}/${denominator}` : '';
-                handleInputChange(input, visualIndex, questionIndex, denominator);
-            }
-            
-            // Update feedback
-            updateFeedback(questionIndex);
+    function createCircleSlices(svg, den) {
+        for (let i = 0; i < den; i++) {
+            const sA = (i * 2 * Math.PI) / den - Math.PI/2;
+            const eA = ((i + 1) * 2 * Math.PI) / den - Math.PI/2;
+            const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            path.setAttribute("d", `M 50 50 L ${50 + 49 * Math.cos(sA)} ${50 + 49 * Math.sin(sA)} A 49 49 0 0 1 ${50 + 49 * Math.cos(eA)} ${50 + 49 * Math.sin(eA)} Z`);
+            path.classList.add('slice');
+            path.addEventListener('click', (e) => handleInteraction(e.target));
+            path.addEventListener('touchstart', (e) => { e.preventDefault(); handleInteraction(e.target); });
+            svg.appendChild(path);
         }
+    }
 
-        // Handle input changes
-        function handleInputChange(input, visualIndex, questionIndex, denominator) {
-            const value = input.value.trim();
-            
-            // Initialize user answers for this question if needed
-            if (!userAnswers[questionIndex]) {
-                userAnswers[questionIndex] = { inputs: [], visuals: [] };
-            }
-            
-            // Store the input value
-            userAnswers[questionIndex].inputs[visualIndex] = value;
-            
-            // Validate the input
-            const expected = input.dataset.expected;
-            const [expectedNum, expectedDen] = expected.split('/').map(Number);
-            
-            // Parse the user's input
-            let userNum, userDen;
-            if (value.includes('/')) {
-                const parts = value.split('/');
-                userNum = parseInt(parts[0].trim());
-                userDen = parseInt(parts[1].trim());
-            } else if (value) {
-                // Try to parse as just numerator
-                userNum = parseInt(value);
-                userDen = denominator;
-            } else {
-                userNum = NaN;
-                userDen = NaN;
-            }
-            
-            // Check if input is valid
-            if (!isNaN(userNum) && !isNaN(userDen) && userDen === denominator) {
-                // Check if fraction is equivalent
-                const question = questions[questionIndex];
-                const [baseNum, baseDen] = question.baseFraction.split('/').map(Number);
-                
-                // Fractions a/b and c/d are equivalent if a*d == b*c
-                const isEquivalent = (userNum * baseDen === userDen * baseNum);
-                
-                // Also check if visual matches the numerator
-                const visualAnswers = userAnswers[questionIndex].visuals[visualIndex] || [];
-                const visualMatches = visualAnswers.length === userNum;
-                
-                if (isEquivalent && visualMatches) {
-                    input.classList.remove('wrong');
-                    input.classList.add('correct');
-                } else {
-                    input.classList.remove('correct');
-                    input.classList.add('wrong');
-                }
-            } else {
-                input.classList.remove('correct', 'wrong');
-            }
-            
-            // Update feedback
-            updateFeedback(questionIndex);
+    function createSquareSlices(svg, den) {
+        let cols = Math.ceil(Math.sqrt(den));
+        if (den === 6) cols = 3; if (den === 12) cols = 4;
+        const rows = Math.ceil(den / cols);
+        for (let i = 0; i < den; i++) {
+            const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+            rect.setAttribute("x", (i % cols) * (100 / cols));
+            rect.setAttribute("y", Math.floor(i / cols) * (100 / rows));
+            rect.setAttribute("width", 100 / cols);
+            rect.setAttribute("height", 100 / rows);
+            rect.classList.add('slice');
+            rect.addEventListener('click', (e) => handleInteraction(e.target));
+            rect.addEventListener('touchstart', (e) => { e.preventDefault(); handleInteraction(e.target); });
+            svg.appendChild(rect);
         }
+    }
 
-        // Update feedback message
-        function updateFeedback(questionIndex) {
-            const question = questions[questionIndex];
-            const [baseNum, baseDen] = question.baseFraction.split('/').map(Number);
-            
-            // Check if all answers are complete and correct
-            let allCorrect = true;
-            let allAnswered = true;
-            
-            // Check each visual/input pair
-            for (let i = 0; i < 3; i++) {
-                const input = userAnswers[questionIndex]?.inputs[i] || '';
-                const visualAnswers = userAnswers[questionIndex]?.visuals[i] || [];
-                
-                if (!input || visualAnswers.length === 0) {
-                    allAnswered = false;
-                    allCorrect = false;
-                    break;
-                }
-                
-                // Parse the input
-                let userNum, userDen;
-                if (input.includes('/')) {
-                    const parts = input.split('/');
-                    userNum = parseInt(parts[0].trim());
-                    userDen = parseInt(parts[1].trim());
-                } else if (input) {
-                    userNum = parseInt(input);
-                    userDen = question.denominators[i];
-                } else {
-                    userNum = NaN;
-                    userDen = NaN;
-                }
-                
-                // Check if equivalent
-                const isEquivalent = !isNaN(userNum) && !isNaN(userDen) && 
-                                    (userNum * baseDen === userDen * baseNum);
-                
-                // Check if visual matches
-                const visualMatches = visualAnswers.length === userNum;
-                
-                if (!isEquivalent || !visualMatches) {
-                    allCorrect = false;
-                }
-            }
-            
-            // Update feedback message
-            if (allCorrect) {
-                feedbackEl.innerHTML = '🎉 Perfect! All fractions are correct! You can move to the next question. 🍰';
-                feedbackEl.className = 'feedback correct';
-                
-                // Mark question as completed
-                completedQuestions.add(questionIndex);
-                
-                // Enable next button
-                nextBtn.disabled = false;
-            } else if (allAnswered) {
-                feedbackEl.innerHTML = '🤔 Not quite right. Check your fractions and try again!';
-                feedbackEl.className = 'feedback incorrect';
-                
-                // Disable next button
-                nextBtn.disabled = true;
-            } else {
-                feedbackEl.innerHTML = 'Select slices and fill in fractions to check your answers!';
-                feedbackEl.className = 'feedback';
-                
-                // Disable next button
-                nextBtn.disabled = true;
-            }
-            
-            // Update check button text
-            checkBtn.textContent = allAnswered ? 'Check Again 🍴' : 'Check My Answers 🍴';
-            
-            // Update progress dots
-            updateProgressDots();
+    function validate() {
+        let win = true;
+        currentQuestion.options.forEach((opt, i) => {
+            const val = parseInt(document.getElementById(`input-${i}`).value);
+            const active = document.getElementById(`card-${i}`).querySelectorAll('.slice.active').length;
+            const card = document.getElementById(`card-${i}`);
+            if (val === opt.n_correct && active === opt.n_correct) card.className = 'fraction-card correct-anim';
+            else { card.className = 'fraction-card wrong-anim'; win = false; }
+        });
+
+        const msg = document.getElementById('feedback-msg');
+        if (win) {
+            msg.innerHTML = "🌟 Amazing Chef! Next order ready!";
+            msg.style.color = "var(--success)";
+            document.getElementById('next-btn').style.display = 'inline-block';
+            score++;
+            document.getElementById('rank-display').innerText = `🍕 Level ${score}`;
+        } else {
+            msg.innerHTML = "Check your math and colored pieces!";
+            msg.style.color = "red";
         }
+    }
 
-        // Update hint based on difficulty
-        function updateHint() {
-            const question = questions[currentQuestionIndex];
-            const [baseNum, baseDen] = question.baseFraction.split('/').map(Number);
-            
-            let hintText = '';
-            if (currentDifficulty === 'easy') {
-                hintText = `💡 Hint: To find equivalent fractions, multiply both numerator and denominator by the same number. For ${baseFractionEl.textContent}, try multiplying by 2, 3, or 4.`;
-            } else if (currentDifficulty === 'medium') {
-                hintText = `💡 Hint: ${baseFractionEl.textContent} is ${(baseNum/baseDen).toFixed(2)} of the whole. Find fractions with the same value.`;
-            } else {
-                hintText = `💡 Challenge: Can you find three different ways to represent ${baseFractionEl.textContent}?`;
-            }
-            
-            hintEl.textContent = hintText;
-        }
-
-        // Get food name for display
-        function getFoodName(foodType) {
-            const foodNames = {
-                pizza: '🍕 Pizza',
-                cookie: '🍪 Cookie',
-                brownie: '🍫 Brownie Pan'
-            };
-            return foodNames[foodType] || foodType;
-        }
-
-        // Check all answers
-        function checkAnswers() {
-            updateFeedback(currentQuestionIndex);
-        }
-
-        // Handle difficulty change
-        function handleDifficultyChange() {
-            currentDifficulty = difficultySelect.value;
-            loadQuestions();
-            displayQuestion(0);
-        }
-
-        // Go to previous question
-        function goToPreviousQuestion() {
-            if (currentQuestionIndex > 0) {
-                displayQuestion(currentQuestionIndex - 1);
-            }
-        }
-
-        // Go to next question
-        function goToNextQuestion() {
-            if (currentQuestionIndex < questions.length - 1) {
-                displayQuestion(currentQuestionIndex + 1);
-            }
-        }
-
-        // Update navigation buttons state
-        function updateNavigationButtons() {
-            prevBtn.disabled = currentQuestionIndex === 0;
-            nextBtn.disabled = currentQuestionIndex === questions.length - 1 || !completedQuestions.has(currentQuestionIndex);
-        }
-
-        // Update progress dots
-        function updateProgressDots() {
-            progressDotsEl.innerHTML = '';
-            
-            for (let i = 0; i < totalQuestions; i++) {
-                const dot = document.createElement('div');
-                
-                if (i === currentQuestionIndex) {
-                    dot.className = 'progress-dot active';
-                } else if (completedQuestions.has(i)) {
-                    dot.className = 'progress-dot completed';
-                } else if (i === 0 || completedQuestions.has(i-1)) {
-                    dot.className = 'progress-dot unlocked';
-                } else {
-                    dot.className = 'progress-dot';
-                }
-                
-                // Make dot clickable
-                dot.addEventListener('click', () => {
-                    if (completedQuestions.has(i) || i === 0 || completedQuestions.has(i-1)) {
-                        displayQuestion(i);
-                    }
-                });
-                
-                progressDotsEl.appendChild(dot);
-            }
-        }
-
-        // Set up image fallbacks
-        function setupImageFallbacks() {
-            // If images don't exist, use colored backgrounds instead
-            const imageFallbacks = {
-                'pizza.png': '#ff8a65',
-                'cookie.png': '#d7ccc8',
-                'browniepan.png': '#8d6e63'
-            };
-            
-            // Check if images exist
-            Object.entries(foodImages).forEach(([food, filename]) => {
-                const img = new Image();
-                img.onerror = function() {
-                    console.log(`Image ${filename} not found, using fallback color`);
-                    // We'll handle this dynamically when creating visuals
-                };
-                img.src = filename;
-            });
-        }
-
-        // Initialize the app when DOM is loaded
-        document.addEventListener('DOMContentLoaded', init);
-    </script>
+    window.onload = initGame;
+</script>
 </body>
 </html>
