@@ -178,6 +178,29 @@
             font-weight: bold;
             height: 30px;
         }
+        /* Ensure the slices are the ONLY things catching the click in that area */
+.fraction-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 50; 
+    cursor: pointer;
+    touch-action: manipulation; /* Fix for mobile tap delay */
+}
+
+.slice {
+    fill: rgba(255, 255, 255, 0.01); /* Almost invisible but technically filled so it's clickable */
+    stroke: rgba(0,0,0,0.5);
+    stroke-width: 1.5;
+    transition: fill 0.2s;
+    pointer-events: auto !important; 
+}
+
+.slice.active {
+    fill: rgba(255, 215, 0, 0.75) !important; 
+    stroke: #d35400;
+    stroke-width: 3;
+}
     </style>
 </head>
 <body>
@@ -209,190 +232,201 @@
 </div>
 
 <script>
-    const diffSettings = {
-        easy: { denominators: [2, 4, 8] },
-        medium: { denominators: [3, 6, 9, 12] },
-        hard: { denominators: [4, 5, 8, 10, 12, 15, 16] }
+const diffSettings = {
+    easy: { denominators: [2, 4, 8] },
+    medium: { denominators: [3, 6, 9, 12] },
+    hard: { denominators: [4, 5, 8, 10, 12, 15, 16] }
+};
+
+const assets = [
+    { type: 'circle', img: 'pizza.png' },
+    { type: 'circle', img: 'cookie.png' },
+    { type: 'square', img: 'browniepan.png' }
+];
+
+let currentQuestion = {};
+let score = 0;
+
+function initGame() {
+    // FIX: Remove focus from the dropdown so Space bar doesn't trigger it
+    document.getElementById('diff-select').blur();
+    
+    document.getElementById('next-btn').disabled = true;
+    document.getElementById('next-btn').classList.remove('enabled');
+    document.getElementById('feedback-msg').innerHTML = "";
+    generateRandomQuestion();
+}
+
+function generateRandomQuestion() {
+    const diff = document.getElementById('diff-select').value;
+    const denoms = diffSettings[diff].denominators;
+    
+    const d1 = denoms[Math.floor(Math.random() * denoms.length)];
+    const n1 = Math.ceil(Math.random() * (d1 - 1));
+    const ratio = n1 / d1;
+
+    let possibleEquivs = [];
+    for(let i=2; i<=16; i++) {
+        if (Math.abs((i * ratio) - Math.round(i * ratio)) < 0.01 && i !== d1) {
+            possibleEquivs.push(i);
+        }
+    }
+
+    possibleEquivs.sort(() => 0.5 - Math.random());
+    const d2 = possibleEquivs[0] || d1 * 2;
+    const d3 = possibleEquivs[1] || d1 * 3;
+
+    currentQuestion = {
+        target: { n: n1, d: d1 },
+        options: [
+            { d: d1, n_correct: n1 },
+            { d: d2, n_correct: Math.round(ratio * d2) },
+            { d: d3, n_correct: Math.round(ratio * d3) }
+        ]
     };
+    renderQuestion();
+}
 
-    const assets = [
-        { type: 'circle', img: 'pizza.png' },
-        { type: 'circle', img: 'cookie.png' },
-        { type: 'square', img: 'browniepan.png' }
-    ];
+function renderQuestion() {
+    const grid = document.getElementById('visual-grid');
+    document.getElementById('target-text').innerHTML = `Chef! Prepare 3 trays that equal <strong>${currentQuestion.target.n}/${currentQuestion.target.d}</strong>`;
+    grid.innerHTML = "";
 
-    let currentQuestion = {};
-    let score = 0;
+    currentQuestion.options.forEach((opt, index) => {
+        const asset = assets[index % assets.length];
+        const card = document.createElement('div');
+        card.className = 'fraction-card';
+        card.id = `card-${index}`;
 
-    function initGame() {
-        document.getElementById('next-btn').disabled = true;
-        document.getElementById('next-btn').classList.remove('enabled');
-        document.getElementById('feedback-msg').innerHTML = "";
-        generateRandomQuestion();
-    }
+        // Create the container that holds image + SVG
+        const shapeContainer = document.createElement('div');
+        shapeContainer.className = `shape-container ${asset.type}`;
+        shapeContainer.style.backgroundImage = `url('${asset.img}')`;
+        shapeContainer.style.backgroundColor = '#f3e5ab';
 
-    function generateRandomQuestion() {
-        const diff = document.getElementById('diff-select').value;
-        const denoms = diffSettings[diff].denominators;
+        const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        svg.setAttribute("viewBox", "0 0 100 100");
+        svg.setAttribute("class", "fraction-overlay");
         
-        // Pick a base denominator and a target numerator
-        const d1 = denoms[Math.floor(Math.random() * denoms.length)];
-        const n1 = Math.ceil(Math.random() * (d1 - 1));
-        const ratio = n1 / d1;
+        // FIX: Ensure the SVG is sized correctly to fill the container
+        svg.style.width = "100%";
+        svg.style.height = "100%";
 
-        // Find denominators that support this ratio
-        let possibleEquivs = [];
-        for(let i=2; i<=16; i++) {
-            if ((i * ratio) % 1 === 0 && i !== d1) {
-                possibleEquivs.push(i);
-            }
-        }
-
-        // Shuffle and pick 2 alternatives. If none, double/triple the base.
-        possibleEquivs.sort(() => 0.5 - Math.random());
-        const d2 = possibleEquivs[0] || d1 * 2;
-        const d3 = possibleEquivs[1] || (possibleEquivs[0] ? possibleEquivs[1] : d1 * 3);
-
-        currentQuestion = {
-            target: { n: n1, d: d1 },
-            options: [
-                { d: d1, n_correct: n1 },
-                { d: d2, n_correct: Math.round(ratio * d2) },
-                { d: d3, n_correct: Math.round(ratio * d3) }
-            ]
-        };
-
-        renderQuestion();
-    }
-
-    function renderQuestion() {
-        const grid = document.getElementById('visual-grid');
-        document.getElementById('target-text').innerHTML = `Chef! Prepare 3 trays that equal <strong>${currentQuestion.target.n}/${currentQuestion.target.d}</strong>`;
-        grid.innerHTML = "";
-
-        currentQuestion.options.forEach((opt, index) => {
-            const asset = assets[index % assets.length];
-            const card = document.createElement('div');
-            card.className = 'fraction-card';
-            card.id = `card-${index}`;
-
-            const shapeContainer = document.createElement('div');
-            shapeContainer.className = `shape-container ${asset.type}`;
-            shapeContainer.style.backgroundImage = `url('${asset.img}')`;
-            shapeContainer.style.backgroundColor = '#f3e5ab'; // Fallback color
-
-            const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-            svg.setAttribute("viewBox", "0 0 100 100");
-            svg.setAttribute("class", "fraction-overlay");
-            svg.setAttribute("width", "200");
-            svg.setAttribute("height", "200");
-
-            if(asset.type === 'circle') {
-                createCircleSlices(svg, opt.d);
-            } else {
-                createSquareSlices(svg, opt.d);
-            }
-
-            shapeContainer.appendChild(svg);
-            card.appendChild(shapeContainer);
-            
-            card.innerHTML += `
-                <div class="input-group">
-                    <input type="number" class="fraction-input" id="input-${index}" placeholder="?">
-                    <div class="fraction-line"></div>
-                    <div class="denominator-text">${opt.d}</div>
-                </div>
-            `;
-            
-            grid.appendChild(card);
-        });
-    }
-
-    function createCircleSlices(svg, den) {
-        const centerX = 50, centerY = 50, radius = 50;
-        for (let i = 0; i < den; i++) {
-            const sA = (i * 2 * Math.PI) / den - Math.PI/2;
-            const eA = ((i + 1) * 2 * Math.PI) / den - Math.PI/2;
-            const x1 = centerX + radius * Math.cos(sA);
-            const y1 = centerY + radius * Math.sin(sA);
-            const x2 = centerX + radius * Math.cos(eA);
-            const y2 = centerY + radius * Math.sin(eA);
-            
-            const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-            path.setAttribute("d", `M 50 50 L ${x1} ${y1} A 50 50 0 0 1 ${x2} ${y2} Z`);
-            path.setAttribute("class", "slice");
-            path.addEventListener('click', function(e) {
-                this.classList.toggle('active');
-            });
-            svg.appendChild(path);
-        }
-    }
-
-    function createSquareSlices(svg, den) {
-        let cols = Math.ceil(Math.sqrt(den));
-        if (den === 6) cols = 3;
-        if (den === 8) cols = 4;
-        if (den === 10) cols = 5;
-        if (den === 12) cols = 4;
-
-        const rows = Math.ceil(den / cols);
-        const w = 100 / cols;
-        const h = 100 / rows;
-
-        for (let i = 0; i < den; i++) {
-            const r = Math.floor(i / cols);
-            const c = i % cols;
-            const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-            rect.setAttribute("x", c * w);
-            rect.setAttribute("y", r * h);
-            rect.setAttribute("width", w);
-            rect.setAttribute("height", h);
-            rect.setAttribute("class", "slice");
-            rect.addEventListener('click', function(e) {
-                this.classList.toggle('active');
-            });
-            svg.appendChild(rect);
-        }
-    }
-
-    function validate() {
-        let allCorrect = true;
-        currentQuestion.options.forEach((opt, i) => {
-            const inputVal = parseInt(document.getElementById(`input-${i}`).value);
-            const card = document.getElementById(`card-${i}`);
-            const activeSlices = card.querySelectorAll('.slice.active').length;
-
-            if (inputVal === opt.n_correct && activeSlices === opt.n_correct) {
-                card.className = 'fraction-card correct-anim';
-            } else {
-                card.className = 'fraction-card wrong-anim';
-                allCorrect = false;
-            }
-        });
-
-        const feedback = document.getElementById('feedback-msg');
-        if (allCorrect) {
-            feedback.innerHTML = "🌟 Perfect Service! You earned a Star!";
-            feedback.style.color = "var(--success)";
-            document.getElementById('next-btn').disabled = false;
-            document.getElementById('next-btn').classList.add('enabled');
-            updateRank();
+        if(asset.type === 'circle') {
+            createCircleSlices(svg, opt.d);
         } else {
-            feedback.innerHTML = "Chef, some trays don't look right. Double check!";
-            feedback.style.color = "#e74c3c";
+            createSquareSlices(svg, opt.d);
         }
-    }
 
-    function updateRank() {
-        score++;
-        let rank = "Kitchen Helper";
-        if (score > 3) rank = "Pizza Apprentice";
-        if (score > 7) rank = "Pastry Sous Chef";
-        if (score > 12) rank = "Master Fraction Chef";
-        document.getElementById('rank-display').innerHTML = `🍕 ${rank} (Level ${score})`;
-    }
+        shapeContainer.appendChild(svg);
+        card.appendChild(shapeContainer);
+        
+        card.innerHTML += `
+            <div class="input-group">
+                <input type="number" class="fraction-input" id="input-${index}" placeholder="?">
+                <div class="fraction-line"></div>
+                <div class="denominator-text">${opt.d}</div>
+            </div>
+        `;
+        grid.appendChild(card);
+    });
+}
 
-    window.onload = initGame;
+function createCircleSlices(svg, den) {
+    const centerX = 50, centerY = 50, radius = 48; // Slightly smaller to avoid edge clipping
+    for (let i = 0; i < den; i++) {
+        const sA = (i * 2 * Math.PI) / den - Math.PI/2;
+        const eA = ((i + 1) * 2 * Math.PI) / den - Math.PI/2;
+        const x1 = centerX + radius * Math.cos(sA);
+        const y1 = centerY + radius * Math.sin(sA);
+        const x2 = centerX + radius * Math.cos(eA);
+        const y2 = centerY + radius * Math.sin(eA);
+        
+        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        path.setAttribute("d", `M 50 50 L ${x1} ${y1} A ${radius} ${radius} 0 0 1 ${x2} ${y2} Z`);
+        path.setAttribute("class", "slice");
+        
+        // Use mousedown for faster response than click
+        path.addEventListener('mousedown', function(e) {
+            e.preventDefault();
+            this.classList.toggle('active');
+        });
+        svg.appendChild(path);
+    }
+}
+
+function createSquareSlices(svg, den) {
+    let cols = Math.ceil(Math.sqrt(den));
+    if (den === 6) cols = 3;
+    if (den === 8) cols = 4;
+    if (den === 10) cols = 5;
+    if (den === 12) cols = 4;
+
+    const rows = Math.ceil(den / cols);
+    const w = 100 / cols;
+    const h = 100 / rows;
+
+    for (let i = 0; i < den; i++) {
+        const r = Math.floor(i / cols);
+        const c = i % cols;
+        const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+        rect.setAttribute("x", c * w);
+        rect.setAttribute("y", r * h);
+        rect.setAttribute("width", w);
+        rect.setAttribute("height", h);
+        rect.setAttribute("class", "slice");
+        
+        rect.addEventListener('mousedown', function(e) {
+            e.preventDefault();
+            this.classList.toggle('active');
+        });
+        svg.appendChild(rect);
+    }
+}
+
+function validate() {
+    let allCorrect = true;
+    currentQuestion.options.forEach((opt, i) => {
+        const inputField = document.getElementById(`input-${i}`);
+        const inputVal = parseInt(inputField.value);
+        const card = document.getElementById(`card-${i}`);
+        const activeSlices = card.querySelectorAll('.slice.active').length;
+
+        if (inputVal === opt.n_correct && activeSlices === opt.n_correct) {
+            card.classList.add('correct-anim');
+            card.classList.remove('wrong-anim');
+        } else {
+            card.classList.add('wrong-anim');
+            card.classList.remove('correct-anim');
+            allCorrect = false;
+        }
+    });
+
+    const feedback = document.getElementById('feedback-msg');
+    if (allCorrect) {
+        feedback.innerHTML = "🌟 Perfect Service! You earned a Star!";
+        feedback.style.color = "var(--success)";
+        const nextBtn = document.getElementById('next-btn');
+        nextBtn.disabled = false;
+        nextBtn.classList.add('enabled');
+        updateRank();
+    } else {
+        feedback.innerHTML = "Chef, check your math and slices again!";
+        feedback.style.color = "#e74c3c";
+    }
+}
+
+function updateRank() {
+    score++;
+    let rank = "Kitchen Helper";
+    if (score > 3) rank = "Pizza Apprentice";
+    if (score > 7) rank = "Pastry Sous Chef";
+    if (score > 12) rank = "Master Fraction Chef";
+    document.getElementById('rank-display').innerHTML = `🍕 ${rank} (Level ${score})`;
+}
+
+window.onload = initGame;
+
 </script>
 </body>
 </html>
