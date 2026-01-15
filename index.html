@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Equivalent Fractions Practice</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-chart-pie"></i> Equivalent Fractions Explorer</h1>
+            <p class="subtitle">Click shapes to color sections. Enter equivalent fractions and check your answers!</p>
+        </header>
+
+        <div class="stats-bar">
+            <div class="stat">
+                <span class="stat-label">Question:</span>
+                <span id="question-number">1</span>/<span id="total-questions">10</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Score:</span>
+                <span id="score">0</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Correct in a row:</span>
+                <span id="streak">0</span>
+            </div>
+        </div>
+
+        <div class="question-container">
+            <div class="question-header">
+                <h2 id="question-text">Find fractions equivalent to <span class="base-fraction">1/2</span></h2>
+                <div class="difficulty">
+                    <span>Difficulty:</span>
+                    <select id="difficulty-select">
+                        <option value="easy">Easy (2-8 parts)</option>
+                        <option value="medium" selected>Medium (3-12 parts)</option>
+                        <option value="hard">Hard (5-16 parts)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="visual-area" id="visual-area">
+                <!-- Shapes will be generated here -->
+            </div>
+
+            <div class="inputs-area">
+                <!-- Inputs will be generated here -->
+            </div>
+
+            <div class="controls">
+                <button id="prev-btn" class="nav-btn">
+                    <i class="fas fa-arrow-left"></i> Previous
+                </button>
+                
+                <button id="check-btn" class="check-btn">
+                    <i class="fas fa-check-circle"></i> Check Answers
+                </button>
+                
+                <button id="next-btn" class="nav-btn" disabled>
+                    Next <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+
+            <div class="feedback" id="feedback"></div>
+
+            <div class="instructions">
+                <h3><i class="fas fa-lightbulb"></i> How to Play:</h3>
+                <ol>
+                    <li>Click on shape sections to color them</li>
+                    <li>Enter the fraction (colored parts / total parts) in the input boxes</li>
+                    <li>Click "Check Answers" to verify your work</li>
+                    <li>Get all three correct to move to the next question!</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="celebration" class="celebration hidden">
+        <div class="celebration-content">
+            <i class="fas fa-trophy"></i>
+            <h2>Excellent!</h2>
+            <p>All answers correct! Moving to next question...</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
