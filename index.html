@@ -3,95 +3,1006 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Equivalent Fractions Practice</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Fraction Fun - Equivalent Fractions Practice</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
+            background: linear-gradient(to bottom right, #e3f2fd, #fce4ec);
+            color: #333;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 4px dotted #ff9800;
+            padding-bottom: 20px;
+        }
+        
+        h1 {
+            color: #ff5722;
+            font-size: 2.8rem;
+            text-shadow: 2px 2px 0 #ffeb3b;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #2196f3;
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 15px;
+            border: 3px solid #4caf50;
+        }
+        
+        .difficulty-selector {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .difficulty-selector label {
+            font-weight: bold;
+            color: #ff5722;
+            font-size: 1.1rem;
+        }
+        
+        select {
+            padding: 10px 15px;
+            border-radius: 10px;
+            border: 2px solid #2196f3;
+            background-color: white;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        select:hover {
+            background-color: #e3f2fd;
+        }
+        
+        .navigation {
+            display: flex;
+            gap: 15px;
+        }
+        
+        button {
+            padding: 12px 25px;
+            border-radius: 10px;
+            border: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-prev {
+            background-color: #ff9800;
+            color: white;
+        }
+        
+        .btn-prev:hover {
+            background-color: #f57c00;
+        }
+        
+        .btn-next {
+            background-color: #4caf50;
+            color: white;
+        }
+        
+        .btn-next:hover {
+            background-color: #388e3c;
+        }
+        
+        .btn-check {
+            background-color: #2196f3;
+            color: white;
+            margin: 20px auto;
+            display: block;
+            width: 200px;
+            justify-content: center;
+        }
+        
+        .btn-check:hover {
+            background-color: #1976d2;
+        }
+        
+        .btn-check:disabled {
+            background-color: #b0bec5;
+            cursor: not-allowed;
+        }
+        
+        .question-container {
+            background-color: #f0f9ff;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 3px dashed #2196f3;
+        }
+        
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .question-title {
+            font-size: 1.8rem;
+            color: #2196f3;
+        }
+        
+        .base-fraction {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #ff5722;
+            background-color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: 3px solid #ff9800;
+            display: inline-block;
+            margin: 10px 0;
+        }
+        
+        .instructions {
+            font-size: 1.2rem;
+            margin-bottom: 25px;
+            color: #555;
+            line-height: 1.5;
+        }
+        
+        .visual-area {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin: 30px 0;
+        }
+        
+        .fraction-item {
+            text-align: center;
+            background-color: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            flex: 1;
+            min-width: 200px;
+            max-width: 300px;
+        }
+        
+        .shape-container {
+            margin: 15px 0;
+            position: relative;
+            height: 150px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .circle-container, .square-container, .image-container {
+            width: 140px;
+            height: 140px;
+        }
+        
+        .circle-svg, .square-svg {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .slice {
+            fill: white;
+            stroke: #333;
+            stroke-width: 2;
+            transition: fill 0.3s;
+            cursor: pointer;
+        }
+        
+        .slice.active {
+            fill: #4caf50;
+        }
+        
+        .square-slice {
+            fill: white;
+            stroke: #333;
+            stroke-width: 2;
+            transition: fill 0.3s;
+            cursor: pointer;
+        }
+        
+        .square-slice.active {
+            fill: #ff9800;
+        }
+        
+        .image-grid {
+            display: grid;
+            gap: 5px;
+            width: 140px;
+            height: 140px;
+            margin: 0 auto;
+        }
+        
+        .image-cell {
+            background-size: cover;
+            background-position: center;
+            border: 2px solid #333;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .image-cell.active {
+            border-color: #ff5722;
+            border-width: 3px;
+            transform: scale(0.95);
+        }
+        
+        .fraction-input {
+            width: 80px;
+            padding: 10px;
+            font-size: 1.4rem;
+            text-align: center;
+            border: 3px solid #ccc;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        
+        .fraction-input.correct {
+            border-color: #4caf50;
+            background-color: #e8f5e9;
+        }
+        
+        .fraction-input.wrong {
+            border-color: #f44336;
+            background-color: #ffebee;
+        }
+        
+        .feedback {
+            text-align: center;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-top: 20px;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .feedback.correct {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border: 3px solid #4caf50;
+        }
+        
+        .feedback.incorrect {
+            background-color: #ffebee;
+            color: #c62828;
+            border: 3px solid #f44336;
+        }
+        
+        .progress {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+            gap: 10px;
+        }
+        
+        .progress-dot {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background-color: #ccc;
+        }
+        
+        .progress-dot.active {
+            background-color: #4caf50;
+        }
+        
+        .progress-dot.completed {
+            background-color: #2196f3;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #666;
+            font-size: 0.9rem;
+            border-top: 2px solid #eee;
+            padding-top: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .visual-area {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .fraction-item {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1><i class="fas fa-chart-pie"></i> Equivalent Fractions Explorer</h1>
-            <p class="subtitle">Click shapes to color sections. Enter equivalent fractions and check your answers!</p>
+            <h1>🎯 Fraction Fun 🍕</h1>
+            <div class="subtitle">Practice Equivalent Fractions with Visuals</div>
         </header>
-
-        <div class="stats-bar">
-            <div class="stat">
-                <span class="stat-label">Question:</span>
-                <span id="question-number">1</span>/<span id="total-questions">10</span>
+        
+        <div class="controls">
+            <div class="difficulty-selector">
+                <label for="difficulty">Difficulty Level:</label>
+                <select id="difficulty">
+                    <option value="easy">Easy (Denominators up to 8)</option>
+                    <option value="medium" selected>Medium (Denominators up to 12)</option>
+                    <option value="hard">Hard (Denominators up to 16)</option>
+                </select>
             </div>
-            <div class="stat">
-                <span class="stat-label">Score:</span>
-                <span id="score">0</span>
-            </div>
-            <div class="stat">
-                <span class="stat-label">Correct in a row:</span>
-                <span id="streak">0</span>
+            
+            <div class="navigation">
+                <button class="btn-prev" id="prevBtn">⬅ Previous</button>
+                <button class="btn-next" id="nextBtn" disabled>Next ➡</button>
             </div>
         </div>
-
+        
         <div class="question-container">
             <div class="question-header">
-                <h2 id="question-text">Find fractions equivalent to <span class="base-fraction">1/2</span></h2>
-                <div class="difficulty">
-                    <span>Difficulty:</span>
-                    <select id="difficulty-select">
-                        <option value="easy">Easy (2-8 parts)</option>
-                        <option value="medium" selected>Medium (3-12 parts)</option>
-                        <option value="hard">Hard (5-16 parts)</option>
-                    </select>
+                <div class="question-title">Question <span id="questionNum">1</span> of <span id="totalQuestions">5</span></div>
+                <div class="base-fraction" id="baseFraction">1/2</div>
+            </div>
+            
+            <div class="instructions" id="instructions">
+                Create three equivalent fractions. Click on the slices to color them, then type the correct fraction in the box.
+            </div>
+            
+            <div class="visual-area" id="visualArea">
+                <!-- Visuals will be generated here -->
+            </div>
+            
+            <button class="btn-check" id="checkBtn">Check My Answers ✓</button>
+            
+            <div class="feedback" id="feedback">
+                Complete all fractions to check your answers!
+            </div>
+        </div>
+        
+        <div class="progress" id="progressDots">
+            <!-- Progress dots will be generated here -->
+        </div>
+        
+        <footer>
+            <p>Fraction Fun - A fun way to learn equivalent fractions! 🍕🍪</p>
+            <p>Click on slices or images to select them. Fill in the fractions to match the visual.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Question database with different base fractions
+        const questionDatabase = {
+            easy: [
+                { baseFraction: "1/2", denominators: [4, 6, 8], shapes: ["circle", "square", "image"], image: "pizza.png" },
+                { baseFraction: "1/3", denominators: [6, 9, 12], shapes: ["circle", "square", "image"], image: "cookie.png" },
+                { baseFraction: "1/4", denominators: [8, 12, 16], shapes: ["circle", "image", "square"], image: "pizza.png" },
+                { baseFraction: "2/3", denominators: [6, 9, 12], shapes: ["square", "circle", "image"], image: "cookie.png" },
+                { baseFraction: "3/4", denominators: [8, 12, 16], shapes: ["image", "square", "circle"], image: "pizza.png" }
+            ],
+            medium: [
+                { baseFraction: "2/5", denominators: [10, 15, 20], shapes: ["circle", "square", "image"], image: "cookie.png" },
+                { baseFraction: "3/5", denominators: [10, 15, 20], shapes: ["square", "image", "circle"], image: "pizza.png" },
+                { baseFraction: "2/7", denominators: [14, 21, 28], shapes: ["image", "circle", "square"], image: "cookie.png" },
+                { baseFraction: "3/8", denominators: [16, 24, 32], shapes: ["circle", "square", "image"], image: "pizza.png" },
+                { baseFraction: "5/6", denominators: [12, 18, 24], shapes: ["square", "image", "circle"], image: "cookie.png" }
+            ],
+            hard: [
+                { baseFraction: "3/7", denominators: [14, 21, 28], shapes: ["circle", "square", "image"], image: "pizza.png" },
+                { baseFraction: "4/9", denominators: [18, 27, 36], shapes: ["square", "image", "circle"], image: "cookie.png" },
+                { baseFraction: "5/11", denominators: [22, 33, 44], shapes: ["image", "circle", "square"], image: "pizza.png" },
+                { baseFraction: "7/12", denominators: [24, 36, 48], shapes: ["circle", "square", "image"], image: "cookie.png" },
+                { baseFraction: "8/15", denominators: [30, 45, 60], shapes: ["square", "image", "circle"], image: "pizza.png" }
+            ]
+        };
+
+        // App state
+        let currentDifficulty = 'medium';
+        let currentQuestionIndex = 0;
+        let questions = [];
+        let userAnswers = [];
+        let completedQuestions = new Set();
+        const totalQuestions = 5;
+
+        // DOM elements
+        const difficultySelect = document.getElementById('difficulty');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const checkBtn = document.getElementById('checkBtn');
+        const questionNumEl = document.getElementById('questionNum');
+        const totalQuestionsEl = document.getElementById('totalQuestions');
+        const baseFractionEl = document.getElementById('baseFraction');
+        const instructionsEl = document.getElementById('instructions');
+        const visualAreaEl = document.getElementById('visualArea');
+        const feedbackEl = document.getElementById('feedback');
+        const progressDotsEl = document.getElementById('progressDots');
+
+        // Initialize the app
+        function init() {
+            // Load questions for current difficulty
+            loadQuestions();
+            
+            // Display first question
+            displayQuestion(currentQuestionIndex);
+            
+            // Set up event listeners
+            difficultySelect.addEventListener('change', handleDifficultyChange);
+            prevBtn.addEventListener('click', goToPreviousQuestion);
+            nextBtn.addEventListener('click', goToNextQuestion);
+            checkBtn.addEventListener('click', checkAnswers);
+            
+            // Initialize progress dots
+            updateProgressDots();
+        }
+
+        // Load questions based on difficulty
+        function loadQuestions() {
+            // Get questions for current difficulty
+            const difficultyQuestions = questionDatabase[currentDifficulty];
+            
+            // Shuffle the questions
+            questions = [...difficultyQuestions].sort(() => Math.random() - 0.5);
+            
+            // Take only the number of questions we need
+            questions = questions.slice(0, totalQuestions);
+            
+            // Reset user answers
+            userAnswers = new Array(totalQuestions).fill().map(() => ({
+                inputs: [],
+                visuals: []
+            }));
+            
+            // Reset completed questions
+            completedQuestions.clear();
+            
+            // Reset UI
+            currentQuestionIndex = 0;
+            updateNavigationButtons();
+        }
+
+        // Display a question by index
+        function displayQuestion(index) {
+            if (index < 0 || index >= questions.length) return;
+            
+            const question = questions[index];
+            currentQuestionIndex = index;
+            
+            // Update UI elements
+            questionNumEl.textContent = index + 1;
+            totalQuestionsEl.textContent = totalQuestions;
+            baseFractionEl.textContent = question.baseFraction;
+            
+            // Update instructions based on shapes
+            const shapeNames = question.shapes.map(shape => {
+                if (shape === 'circle') return 'circle';
+                if (shape === 'square') return 'square';
+                return 'image';
+            });
+            
+            instructionsEl.textContent = `Create three equivalent fractions. Click on the ${shapeNames.join(', ')} to color them, then type the correct fraction in the box.`;
+            
+            // Clear previous visuals
+            visualAreaEl.innerHTML = '';
+            
+            // Get the base fraction values
+            const [baseNum, baseDen] = question.baseFraction.split('/').map(Number);
+            
+            // Create visual items for each denominator
+            question.denominators.forEach((denominator, i) => {
+                const shapeType = question.shapes[i];
+                const expectedNumerator = (baseNum * denominator) / baseDen;
+                
+                // Create fraction item container
+                const fractionItem = document.createElement('div');
+                fractionItem.className = 'fraction-item';
+                
+                // Create title
+                const title = document.createElement('h3');
+                title.textContent = `Equivalent to ${question.baseFraction}`;
+                fractionItem.appendChild(title);
+                
+                // Create shape container
+                const shapeContainer = document.createElement('div');
+                shapeContainer.className = 'shape-container';
+                
+                // Create the appropriate visual based on shape type
+                if (shapeType === 'circle') {
+                    shapeContainer.innerHTML = createCircleVisual(denominator);
+                } else if (shapeType === 'square') {
+                    shapeContainer.innerHTML = createSquareVisual(denominator);
+                } else {
+                    shapeContainer.innerHTML = createImageVisual(denominator, question.image);
+                }
+                
+                fractionItem.appendChild(shapeContainer);
+                
+                // Create input for fraction
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.className = 'fraction-input';
+                input.placeholder = `? / ${denominator}`;
+                input.dataset.index = i;
+                input.dataset.denominator = denominator;
+                input.dataset.expected = `${expectedNumerator}/${denominator}`;
+                
+                // Restore previous answer if exists
+                if (userAnswers[index] && userAnswers[index].inputs[i] !== undefined) {
+                    input.value = userAnswers[index].inputs[i];
+                    if (userAnswers[index].inputs[i] === `${expectedNumerator}/${denominator}`) {
+                        input.classList.add('correct');
+                    }
+                }
+                
+                fractionItem.appendChild(input);
+                
+                // Add click handlers for slices/cells
+                setTimeout(() => {
+                    if (shapeType === 'circle' || shapeType === 'square') {
+                        const slices = shapeContainer.querySelectorAll('.slice, .square-slice');
+                        slices.forEach((slice, sliceIndex) => {
+                            slice.addEventListener('click', () => {
+                                handleSliceClick(slice, sliceIndex, i, index, denominator, shapeType);
+                            });
+                            
+                            // Restore previous visual state
+                            if (userAnswers[index] && 
+                                userAnswers[index].visuals[i] && 
+                                userAnswers[index].visuals[i].includes(sliceIndex)) {
+                                slice.classList.add('active');
+                            }
+                        });
+                    } else {
+                        const cells = shapeContainer.querySelectorAll('.image-cell');
+                        cells.forEach((cell, cellIndex) => {
+                            cell.addEventListener('click', () => {
+                                handleImageCellClick(cell, cellIndex, i, index, denominator);
+                            });
+                            
+                            // Restore previous visual state
+                            if (userAnswers[index] && 
+                                userAnswers[index].visuals[i] && 
+                                userAnswers[index].visuals[i].includes(cellIndex)) {
+                                cell.classList.add('active');
+                            }
+                        });
+                    }
+                    
+                    // Add input handler
+                    input.addEventListener('input', () => handleInputChange(input, i, index, denominator));
+                }, 10);
+                
+                visualAreaEl.appendChild(fractionItem);
+            });
+            
+            // Update feedback based on current state
+            updateFeedback(index);
+            
+            // Update progress dots
+            updateProgressDots();
+            
+            // Update navigation buttons
+            updateNavigationButtons();
+        }
+
+        // Create circle visual with SVG
+        function createCircleVisual(denominator) {
+            const size = 140;
+            const radius = size / 2;
+            const center = radius;
+            
+            let slicesHTML = '';
+            
+            for (let i = 0; i < denominator; i++) {
+                const startAngle = (i * 2 * Math.PI) / denominator;
+                const endAngle = ((i + 1) * 2 * Math.PI) / denominator;
+                
+                const x1 = center + radius * Math.sin(startAngle);
+                const y1 = center - radius * Math.cos(startAngle);
+                const x2 = center + radius * Math.sin(endAngle);
+                const y2 = center - radius * Math.cos(endAngle);
+                
+                const largeArc = (endAngle - startAngle) > Math.PI ? 1 : 0;
+                
+                slicesHTML += `
+                    <path class="slice" 
+                          d="M ${center} ${center} L ${x1} ${y1} A ${radius} ${radius} 0 ${largeArc} 1 ${x2} ${y2} Z"
+                          data-index="${i}">
+                    </path>
+                `;
+            }
+            
+            return `
+                <svg class="circle-svg" viewBox="0 0 ${size} ${size}" width="${size}" height="${size}">
+                    ${slicesHTML}
+                </svg>
+            `;
+        }
+
+        // Create square visual with SVG
+        function createSquareVisual(denominator) {
+            const size = 140;
+            const rows = Math.ceil(Math.sqrt(denominator));
+            const cols = Math.ceil(denominator / rows);
+            const cellWidth = size / cols;
+            const cellHeight = size / rows;
+            
+            let slicesHTML = '';
+            let cellIndex = 0;
+            
+            for (let row = 0; row < rows; row++) {
+                for (let col = 0; col < cols; col++) {
+                    if (cellIndex >= denominator) break;
+                    
+                    const x = col * cellWidth;
+                    const y = row * cellHeight;
+                    
+                    slicesHTML += `
+                        <rect class="square-slice" 
+                              x="${x}" y="${y}" 
+                              width="${cellWidth}" height="${cellHeight}"
+                              data-index="${cellIndex}">
+                        </rect>
+                    `;
+                    
+                    cellIndex++;
+                }
+            }
+            
+            return `
+                <svg class="square-svg" viewBox="0 0 ${size} ${size}" width="${size}" height="${size}">
+                    ${slicesHTML}
+                </svg>
+            `;
+        }
+
+        // Create image grid visual
+        function createImageVisual(denominator, imageName) {
+            // Determine grid layout
+            let rows, cols;
+            if (denominator <= 4) {
+                rows = 1;
+                cols = denominator;
+            } else if (denominator <= 9) {
+                rows = 3;
+                cols = Math.ceil(denominator / 3);
+            } else {
+                rows = 4;
+                cols = Math.ceil(denominator / 4);
+            }
+            
+            // Create grid CSS
+            const gridStyle = `grid-template-columns: repeat(${cols}, 1fr); grid-template-rows: repeat(${rows}, 1fr);`;
+            
+            // Create image cells
+            let cellsHTML = '';
+            const imageUrl = imageName || 'pizza.png';
+            
+            for (let i = 0; i < denominator; i++) {
+                cellsHTML += `<div class="image-cell" data-index="${i}" style="background-image: url('${imageUrl}')"></div>`;
+            }
+            
+            return `
+                <div class="image-grid" style="${gridStyle}">
+                    ${cellsHTML}
                 </div>
-            </div>
+            `;
+        }
 
-            <div class="visual-area" id="visual-area">
-                <!-- Shapes will be generated here -->
-            </div>
+        // Handle slice clicks (for circles and squares)
+        function handleSliceClick(slice, sliceIndex, visualIndex, questionIndex, denominator, shapeType) {
+            // Toggle active state
+            slice.classList.toggle('active');
+            
+            // Initialize user answers for this question if needed
+            if (!userAnswers[questionIndex]) {
+                userAnswers[questionIndex] = { inputs: [], visuals: [] };
+            }
+            if (!userAnswers[questionIndex].visuals[visualIndex]) {
+                userAnswers[questionIndex].visuals[visualIndex] = [];
+            }
+            
+            // Update user's visual answer
+            const visualAnswers = userAnswers[questionIndex].visuals[visualIndex];
+            const indexInArray = visualAnswers.indexOf(sliceIndex);
+            
+            if (indexInArray > -1) {
+                // Remove from array if already selected
+                visualAnswers.splice(indexInArray, 1);
+            } else {
+                // Add to array if not selected
+                visualAnswers.push(sliceIndex);
+            }
+            
+            // Sort the array
+            visualAnswers.sort((a, b) => a - b);
+            
+            // Update the corresponding input field
+            const input = document.querySelector(`.fraction-input[data-index="${visualIndex}"]`);
+            if (input) {
+                input.value = visualAnswers.length > 0 ? `${visualAnswers.length}/${denominator}` : '';
+                handleInputChange(input, visualIndex, questionIndex, denominator);
+            }
+            
+            // Update feedback
+            updateFeedback(questionIndex);
+        }
 
-            <div class="inputs-area">
-                <!-- Inputs will be generated here -->
-            </div>
+        // Handle image cell clicks
+        function handleImageCellClick(cell, cellIndex, visualIndex, questionIndex, denominator) {
+            // Toggle active state
+            cell.classList.toggle('active');
+            
+            // Initialize user answers for this question if needed
+            if (!userAnswers[questionIndex]) {
+                userAnswers[questionIndex] = { inputs: [], visuals: [] };
+            }
+            if (!userAnswers[questionIndex].visuals[visualIndex]) {
+                userAnswers[questionIndex].visuals[visualIndex] = [];
+            }
+            
+            // Update user's visual answer
+            const visualAnswers = userAnswers[questionIndex].visuals[visualIndex];
+            const indexInArray = visualAnswers.indexOf(cellIndex);
+            
+            if (indexInArray > -1) {
+                // Remove from array if already selected
+                visualAnswers.splice(indexInArray, 1);
+            } else {
+                // Add to array if not selected
+                visualAnswers.push(cellIndex);
+            }
+            
+            // Sort the array
+            visualAnswers.sort((a, b) => a - b);
+            
+            // Update the corresponding input field
+            const input = document.querySelector(`.fraction-input[data-index="${visualIndex}"]`);
+            if (input) {
+                input.value = visualAnswers.length > 0 ? `${visualAnswers.length}/${denominator}` : '';
+                handleInputChange(input, visualIndex, questionIndex, denominator);
+            }
+            
+            // Update feedback
+            updateFeedback(questionIndex);
+        }
 
-            <div class="controls">
-                <button id="prev-btn" class="nav-btn">
-                    <i class="fas fa-arrow-left"></i> Previous
-                </button>
+        // Handle input changes
+        function handleInputChange(input, visualIndex, questionIndex, denominator) {
+            const value = input.value.trim();
+            
+            // Initialize user answers for this question if needed
+            if (!userAnswers[questionIndex]) {
+                userAnswers[questionIndex] = { inputs: [], visuals: [] };
+            }
+            
+            // Store the input value
+            userAnswers[questionIndex].inputs[visualIndex] = value;
+            
+            // Validate the input
+            const expected = input.dataset.expected;
+            const [expectedNum, expectedDen] = expected.split('/').map(Number);
+            
+            // Parse the user's input
+            let userNum, userDen;
+            if (value.includes('/')) {
+                [userNum, userDen] = value.split('/').map(part => parseInt(part.trim()));
+            } else {
+                // Try to parse as just numerator
+                userNum = parseInt(value);
+                userDen = denominator;
+            }
+            
+            // Check if input is valid
+            if (!isNaN(userNum) && !isNaN(userDen) && userDen === denominator) {
+                // Check if fraction is equivalent
+                const question = questions[questionIndex];
+                const [baseNum, baseDen] = question.baseFraction.split('/').map(Number);
                 
-                <button id="check-btn" class="check-btn">
-                    <i class="fas fa-check-circle"></i> Check Answers
-                </button>
+                // Fractions a/b and c/d are equivalent if a*d == b*c
+                const isEquivalent = (userNum * baseDen === userDen * baseNum);
                 
-                <button id="next-btn" class="nav-btn" disabled>
-                    Next <i class="fas fa-arrow-right"></i>
-                </button>
-            </div>
+                // Also check if visual matches the numerator
+                const visualAnswers = userAnswers[questionIndex].visuals[visualIndex] || [];
+                const visualMatches = visualAnswers.length === userNum;
+                
+                if (isEquivalent && visualMatches) {
+                    input.classList.remove('wrong');
+                    input.classList.add('correct');
+                } else {
+                    input.classList.remove('correct');
+                    input.classList.add('wrong');
+                }
+            } else {
+                input.classList.remove('correct', 'wrong');
+            }
+            
+            // Update feedback
+            updateFeedback(questionIndex);
+        }
 
-            <div class="feedback" id="feedback"></div>
+        // Update feedback message
+        function updateFeedback(questionIndex) {
+            const question = questions[questionIndex];
+            const [baseNum, baseDen] = question.baseFraction.split('/').map(Number);
+            
+            // Check if all answers are complete and correct
+            let allCorrect = true;
+            let allAnswered = true;
+            
+            // Check each visual/input pair
+            for (let i = 0; i < 3; i++) {
+                const input = userAnswers[questionIndex]?.inputs[i] || '';
+                const visualAnswers = userAnswers[questionIndex]?.visuals[i] || [];
+                
+                if (!input || visualAnswers.length === 0) {
+                    allAnswered = false;
+                    allCorrect = false;
+                    break;
+                }
+                
+                // Parse the input
+                let userNum, userDen;
+                if (input.includes('/')) {
+                    [userNum, userDen] = input.split('/').map(part => parseInt(part.trim()));
+                } else {
+                    userNum = parseInt(input);
+                    userDen = question.denominators[i];
+                }
+                
+                // Check if equivalent
+                const isEquivalent = !isNaN(userNum) && !isNaN(userDen) && 
+                                    (userNum * baseDen === userDen * baseNum);
+                
+                // Check if visual matches
+                const visualMatches = visualAnswers.length === userNum;
+                
+                if (!isEquivalent || !visualMatches) {
+                    allCorrect = false;
+                }
+            }
+            
+            // Update feedback message
+            if (allCorrect) {
+                feedbackEl.textContent = '🎉 Excellent! All fractions are correct! You can move to the next question.';
+                feedbackEl.className = 'feedback correct';
+                
+                // Mark question as completed
+                completedQuestions.add(questionIndex);
+                
+                // Enable next button
+                nextBtn.disabled = false;
+            } else if (allAnswered) {
+                feedbackEl.textContent = 'Not quite right. Check your fractions and try again!';
+                feedbackEl.className = 'feedback incorrect';
+                
+                // Disable next button
+                nextBtn.disabled = true;
+            } else {
+                feedbackEl.textContent = 'Complete all fractions to check your answers!';
+                feedbackEl.className = 'feedback';
+                
+                // Disable next button
+                nextBtn.disabled = true;
+            }
+            
+            // Update check button text
+            checkBtn.textContent = allAnswered ? 'Check Again ✓' : 'Check My Answers ✓';
+            
+            // Update progress dots
+            updateProgressDots();
+        }
 
-            <div class="instructions">
-                <h3><i class="fas fa-lightbulb"></i> How to Play:</h3>
-                <ol>
-                    <li>Click on shape sections to color them</li>
-                    <li>Enter the fraction (colored parts / total parts) in the input boxes</li>
-                    <li>Click "Check Answers" to verify your work</li>
-                    <li>Get all three correct to move to the next question!</li>
-                </ol>
-            </div>
-        </div>
+        // Check all answers
+        function checkAnswers() {
+            updateFeedback(currentQuestionIndex);
+        }
 
-        <div class="progress-container">
-            <div class="progress-bar">
-                <div class="progress-fill" id="progress-fill"></div>
-            </div>
-        </div>
-    </div>
+        // Handle difficulty change
+        function handleDifficultyChange() {
+            currentDifficulty = difficultySelect.value;
+            loadQuestions();
+            displayQuestion(0);
+        }
 
-    <div id="celebration" class="celebration hidden">
-        <div class="celebration-content">
-            <i class="fas fa-trophy"></i>
-            <h2>Excellent!</h2>
-            <p>All answers correct! Moving to next question...</p>
-        </div>
-    </div>
+        // Go to previous question
+        function goToPreviousQuestion() {
+            if (currentQuestionIndex > 0) {
+                displayQuestion(currentQuestionIndex - 1);
+            }
+        }
 
-    <script src="script.js"></script>
+        // Go to next question
+        function goToNextQuestion() {
+            if (currentQuestionIndex < questions.length - 1) {
+                displayQuestion(currentQuestionIndex + 1);
+            }
+        }
+
+        // Update navigation buttons state
+        function updateNavigationButtons() {
+            prevBtn.disabled = currentQuestionIndex === 0;
+            nextBtn.disabled = currentQuestionIndex === questions.length - 1 || !completedQuestions.has(currentQuestionIndex);
+        }
+
+        // Update progress dots
+        function updateProgressDots() {
+            progressDotsEl.innerHTML = '';
+            
+            for (let i = 0; i < totalQuestions; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'progress-dot';
+                
+                if (i === currentQuestionIndex) {
+                    dot.classList.add('active');
+                } else if (completedQuestions.has(i)) {
+                    dot.classList.add('completed');
+                }
+                
+                // Make dot clickable
+                dot.addEventListener('click', () => {
+                    if (completedQuestions.has(i) || i === 0) {
+                        displayQuestion(i);
+                    } else if (completedQuestions.has(i-1)) {
+                        displayQuestion(i);
+                    }
+                });
+                
+                progressDotsEl.appendChild(dot);
+            }
+        }
+
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
 </body>
 </html>
