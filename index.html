@@ -313,46 +313,59 @@
             grid.appendChild(card);
         });
     }
-
-    function createCircleSlices(svg, den) {
-        const centerX = 50, centerY = 50, radius = 50;
-        for (let i = 0; i < den; i++) {
-            const startAngle = (i * 2 * Math.PI) / den;
-            const endAngle = ((i + 1) * 2 * Math.PI) / den;
-            const x1 = centerX + radius * Math.cos(startAngle - Math.PI/2);
-            const y1 = centerY + radius * Math.sin(startAngle - Math.PI/2);
-            const x2 = centerX + radius * Math.cos(endAngle - Math.PI/2);
-            const y2 = centerY + radius * Math.sin(endAngle - Math.PI/2);
-            
-            const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-            path.setAttribute("d", `M 50 50 L ${x1} ${y1} A 50 50 0 0 1 ${x2} ${y2} Z`);
-            path.setAttribute("class", "slice");
-            path.onclick = () => path.classList.toggle('active');
-            svg.appendChild(path);
-        }
-    }
-
-    function createSquareSlices(svg, den) {
-        // We calculate rows/cols for the grid
-        let cols = Math.ceil(Math.sqrt(den));
-        let rows = Math.ceil(den / cols);
+function createCircleSlices(svg, den) {
+    const centerX = 50, centerY = 50, radius = 50;
+    // Clear existing slices
+    svg.innerHTML = ''; 
+    for (let i = 0; i < den; i++) {
+        const startAngle = (i * 2 * Math.PI) / den;
+        const endAngle = ((i + 1) * 2 * Math.PI) / den;
+        const x1 = centerX + radius * Math.cos(startAngle - Math.PI/2);
+        const y1 = centerY + radius * Math.sin(startAngle - Math.PI/2);
+        const x2 = centerX + radius * Math.cos(endAngle - Math.PI/2);
+        const y2 = centerY + radius * Math.sin(endAngle - Math.PI/2);
         
-        const w = 100 / cols;
-        const h = 100 / rows;
-
-        for (let i = 0; i < den; i++) {
-            const r = Math.floor(i / cols);
-            const c = i % cols;
-            const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-            rect.setAttribute("x", c * w);
-            rect.setAttribute("y", r * h);
-            rect.setAttribute("width", w);
-            rect.setAttribute("height", h);
-            rect.setAttribute("class", "slice");
-            rect.onclick = () => rect.classList.toggle('active');
-            svg.appendChild(rect);
-        }
+        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        path.setAttribute("d", `M 50 50 L ${x1} ${y1} A 50 50 0 0 1 ${x2} ${y2} Z`);
+        path.setAttribute("class", "slice");
+        // FIX: Ensure pointer events are captured
+        path.style.pointerEvents = "auto";
+        path.onclick = function(e) {
+            e.stopPropagation();
+            this.classList.toggle('active');
+        };
+        svg.appendChild(path);
     }
+}
+
+function createSquareSlices(svg, den) {
+    svg.innerHTML = '';
+    let cols = Math.ceil(Math.sqrt(den));
+    // Ensure we don't have empty rows
+    if (den === 6) { cols = 3; } 
+    if (den === 8) { cols = 4; }
+    
+    let rows = Math.ceil(den / cols);
+    const w = 100 / cols;
+    const h = 100 / rows;
+
+    for (let i = 0; i < den; i++) {
+        const r = Math.floor(i / cols);
+        const c = i % cols;
+        const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+        rect.setAttribute("x", c * w);
+        rect.setAttribute("y", r * h);
+        rect.setAttribute("width", w);
+        rect.setAttribute("height", h);
+        rect.setAttribute("class", "slice");
+        rect.style.pointerEvents = "auto";
+        rect.onclick = function(e) {
+            e.stopPropagation();
+            this.classList.toggle('active');
+        };
+        svg.appendChild(rect);
+    }
+}
 
     function validate() {
         let allCorrect = true;
