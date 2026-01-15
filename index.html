@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fraction Fun - Equivalent Fractions Practice</title>
+    <title>Fraction Feast - Equivalent Fractions Practice</title>
     <style>
         * {
             box-sizing: border-box;
@@ -13,40 +13,46 @@
         
         body {
             font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
-            background: linear-gradient(to bottom right, #e3f2fd, #fce4ec);
-            color: #333;
+            background: linear-gradient(to bottom right, #fff9c4, #ffecb3);
+            color: #5d4037;
             padding: 20px;
             min-height: 100vh;
         }
         
         .container {
-            max-width: 1000px;
+            max-width: 1100px;
             margin: 0 auto;
             background-color: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
             padding: 30px;
             position: relative;
             overflow: hidden;
+            border: 8px solid #ff9800;
         }
         
         header {
             text-align: center;
             margin-bottom: 30px;
-            border-bottom: 4px dotted #ff9800;
             padding-bottom: 20px;
+            background: linear-gradient(to right, #ff5722, #ff9800);
+            border-radius: 15px;
+            padding: 20px;
+            color: white;
+            box-shadow: 0 5px 15px rgba(255, 87, 34, 0.3);
         }
         
         h1 {
-            color: #ff5722;
-            font-size: 2.8rem;
-            text-shadow: 2px 2px 0 #ffeb3b;
+            color: white;
+            font-size: 3rem;
+            text-shadow: 3px 3px 0 #e65100;
             margin-bottom: 10px;
+            letter-spacing: 1px;
         }
         
         .subtitle {
-            color: #2196f3;
-            font-size: 1.3rem;
+            color: #fff3e0;
+            font-size: 1.4rem;
             font-weight: bold;
         }
         
@@ -54,57 +60,69 @@
             display: flex;
             justify-content: space-between;
             flex-wrap: wrap;
-            gap: 15px;
+            gap: 20px;
             margin-bottom: 30px;
-            background-color: #f9f9f9;
+            background-color: #fff8e1;
             padding: 20px;
             border-radius: 15px;
-            border: 3px solid #4caf50;
+            border: 4px solid #4caf50;
         }
         
         .difficulty-selector {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 15px;
+            flex: 1;
         }
         
         .difficulty-selector label {
             font-weight: bold;
-            color: #ff5722;
-            font-size: 1.1rem;
+            color: #d84315;
+            font-size: 1.2rem;
+            white-space: nowrap;
         }
         
         select {
-            padding: 10px 15px;
-            border-radius: 10px;
-            border: 2px solid #2196f3;
+            padding: 12px 20px;
+            border-radius: 12px;
+            border: 3px solid #2196f3;
             background-color: white;
             font-weight: bold;
-            font-size: 1rem;
+            font-size: 1.1rem;
             cursor: pointer;
             transition: all 0.3s;
+            flex: 1;
+            max-width: 300px;
         }
         
         select:hover {
             background-color: #e3f2fd;
+            transform: translateY(-2px);
         }
         
         .navigation {
             display: flex;
             gap: 15px;
+            align-items: center;
         }
         
         button {
-            padding: 12px 25px;
-            border-radius: 10px;
+            padding: 14px 28px;
+            border-radius: 12px;
             border: none;
             font-weight: bold;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             cursor: pointer;
             transition: all 0.3s;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        button:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
         
         .btn-prev {
@@ -128,10 +146,12 @@
         .btn-check {
             background-color: #2196f3;
             color: white;
-            margin: 20px auto;
+            margin: 25px auto;
             display: block;
-            width: 200px;
+            width: 250px;
             justify-content: center;
+            font-size: 1.3rem;
+            padding: 16px 30px;
         }
         
         .btn-check:hover {
@@ -141,45 +161,70 @@
         .btn-check:disabled {
             background-color: #b0bec5;
             cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
         }
         
         .question-container {
-            background-color: #f0f9ff;
-            border-radius: 15px;
-            padding: 25px;
+            background-color: #f1f8e9;
+            border-radius: 20px;
+            padding: 30px;
             margin-bottom: 30px;
-            border: 3px dashed #2196f3;
+            border: 5px dashed #ff9800;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .question-container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 10px;
+            background: linear-gradient(to right, #ff5722, #ff9800, #4caf50, #2196f3);
         }
         
         .question-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
         }
         
         .question-title {
             font-size: 1.8rem;
             color: #2196f3;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: 3px solid #2196f3;
         }
         
         .base-fraction {
-            font-size: 2.5rem;
+            font-size: 3rem;
             font-weight: bold;
             color: #ff5722;
             background-color: white;
-            padding: 10px 20px;
-            border-radius: 10px;
-            border: 3px solid #ff9800;
+            padding: 15px 30px;
+            border-radius: 15px;
+            border: 5px solid #ff9800;
             display: inline-block;
             margin: 10px 0;
+            box-shadow: 0 5px 15px rgba(255, 87, 34, 0.3);
         }
         
         .instructions {
-            font-size: 1.2rem;
-            margin-bottom: 25px;
-            color: #555;
-            line-height: 1.5;
+            font-size: 1.3rem;
+            margin-bottom: 30px;
+            color: #5d4037;
+            line-height: 1.6;
+            background: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            border-left: 6px solid #4caf50;
         }
         
         .visual-area {
@@ -192,164 +237,237 @@
         
         .fraction-item {
             text-align: center;
-            background-color: white;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
             flex: 1;
-            min-width: 200px;
-            max-width: 300px;
+            min-width: 250px;
+            max-width: 320px;
+            border: 3px solid #ffcc80;
+            transition: transform 0.3s;
+        }
+        
+        .fraction-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .fraction-item h3 {
+            color: #d84315;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+            background: #fff3e0;
+            padding: 10px;
+            border-radius: 8px;
         }
         
         .shape-container {
-            margin: 15px 0;
+            margin: 20px 0;
             position: relative;
-            height: 150px;
+            height: 200px;
             display: flex;
             justify-content: center;
             align-items: center;
-        }
-        
-        .circle-container, .square-container, .image-container {
-            width: 140px;
-            height: 140px;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 4px solid #795548;
+            background-color: #f5f5f5;
         }
         
         .circle-svg, .square-svg {
             width: 100%;
             height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 2;
+        }
+        
+        .circle-bg, .square-bg, .image-bg {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 1;
+        }
+        
+        .circle-bg {
+            border-radius: 50%;
         }
         
         .slice {
-            fill: white;
+            fill: transparent;
             stroke: #333;
-            stroke-width: 2;
+            stroke-width: 4;
             transition: fill 0.3s;
             cursor: pointer;
         }
         
         .slice.active {
-            fill: #4caf50;
+            fill: rgba(76, 175, 80, 0.6);
+        }
+        
+        .slice.highlight {
+            stroke: #ff5722;
+            stroke-width: 5;
         }
         
         .square-slice {
-            fill: white;
+            fill: transparent;
             stroke: #333;
-            stroke-width: 2;
+            stroke-width: 4;
             transition: fill 0.3s;
             cursor: pointer;
         }
         
         .square-slice.active {
-            fill: #ff9800;
+            fill: rgba(255, 152, 0, 0.6);
         }
         
-        .image-grid {
-            display: grid;
-            gap: 5px;
-            width: 140px;
-            height: 140px;
-            margin: 0 auto;
+        .square-slice.highlight {
+            stroke: #ff5722;
+            stroke-width: 5;
         }
         
-        .image-cell {
-            background-size: cover;
-            background-position: center;
-            border: 2px solid #333;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
+        .fraction-input-container {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
         }
         
-        .image-cell.active {
-            border-color: #ff5722;
-            border-width: 3px;
-            transform: scale(0.95);
+        .fraction-input-label {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #5d4037;
         }
         
         .fraction-input {
-            width: 80px;
-            padding: 10px;
-            font-size: 1.4rem;
+            width: 120px;
+            padding: 12px;
+            font-size: 1.6rem;
             text-align: center;
-            border: 3px solid #ccc;
-            border-radius: 8px;
-            margin-top: 10px;
+            border: 4px solid #ccc;
+            border-radius: 10px;
             font-weight: bold;
+            background: white;
         }
         
         .fraction-input.correct {
             border-color: #4caf50;
             background-color: #e8f5e9;
+            color: #2e7d32;
         }
         
         .fraction-input.wrong {
             border-color: #f44336;
             background-color: #ffebee;
+            color: #c62828;
         }
         
         .feedback {
             text-align: center;
-            padding: 15px;
-            border-radius: 10px;
-            font-size: 1.3rem;
+            padding: 20px;
+            border-radius: 15px;
+            font-size: 1.4rem;
             font-weight: bold;
-            margin-top: 20px;
-            min-height: 60px;
+            margin-top: 25px;
+            min-height: 70px;
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: all 0.5s;
         }
         
         .feedback.correct {
             background-color: #e8f5e9;
             color: #2e7d32;
-            border: 3px solid #4caf50;
+            border: 4px solid #4caf50;
+            animation: pulse 1.5s infinite;
         }
         
         .feedback.incorrect {
             background-color: #ffebee;
             color: #c62828;
-            border: 3px solid #f44336;
+            border: 4px solid #f44336;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
         }
         
         .progress {
             display: flex;
             justify-content: center;
             margin-top: 30px;
-            gap: 10px;
+            gap: 12px;
+            flex-wrap: wrap;
         }
         
         .progress-dot {
-            width: 15px;
-            height: 15px;
+            width: 20px;
+            height: 20px;
             border-radius: 50%;
             background-color: #ccc;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 3px solid white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
         
         .progress-dot.active {
             background-color: #4caf50;
+            transform: scale(1.3);
         }
         
         .progress-dot.completed {
             background-color: #2196f3;
         }
         
+        .progress-dot.unlocked {
+            background-color: #ff9800;
+        }
+        
+        .food-label {
+            position: absolute;
+            bottom: 10px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-weight: bold;
+            color: white;
+            background-color: rgba(0,0,0,0.6);
+            padding: 5px;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            z-index: 3;
+        }
+        
         footer {
             text-align: center;
             margin-top: 30px;
-            color: #666;
-            font-size: 0.9rem;
-            border-top: 2px solid #eee;
+            color: #795548;
+            font-size: 1rem;
+            border-top: 3px solid #ffcc80;
             padding-top: 20px;
         }
         
-        @media (max-width: 768px) {
-            .controls {
-                flex-direction: column;
-                align-items: center;
-            }
-            
+        .hint {
+            text-align: center;
+            margin-top: 15px;
+            font-style: italic;
+            color: #ff9800;
+            font-size: 1.1rem;
+        }
+        
+        @media (max-width: 900px) {
             .visual-area {
                 flex-direction: column;
                 align-items: center;
@@ -357,11 +475,50 @@
             
             .fraction-item {
                 width: 100%;
-                max-width: 300px;
+                max-width: 400px;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+            
+            .difficulty-selector {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            select {
+                max-width: 100%;
+                width: 100%;
             }
             
             h1 {
-                font-size: 2rem;
+                font-size: 2.2rem;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .question-header {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .fraction-input-container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .base-fraction {
+                font-size: 2.2rem;
+                padding: 10px 20px;
             }
         }
     </style>
@@ -369,17 +526,17 @@
 <body>
     <div class="container">
         <header>
-            <h1>🎯 Fraction Fun 🍕</h1>
-            <div class="subtitle">Practice Equivalent Fractions with Visuals</div>
+            <h1>🍕 Fraction Feast 🍪</h1>
+            <div class="subtitle">Slice, Share, and Learn Equivalent Fractions!</div>
         </header>
         
         <div class="controls">
             <div class="difficulty-selector">
-                <label for="difficulty">Difficulty Level:</label>
+                <label for="difficulty">🎚️ Difficulty Level:</label>
                 <select id="difficulty">
-                    <option value="easy">Easy (Denominators up to 8)</option>
-                    <option value="medium" selected>Medium (Denominators up to 12)</option>
-                    <option value="hard">Hard (Denominators up to 16)</option>
+                    <option value="easy">Easy (Like slicing a pizza!)</option>
+                    <option value="medium" selected>Medium (Cookie sharing time!)</option>
+                    <option value="hard">Hard (Brownie pan challenge!)</option>
                 </select>
             </div>
             
@@ -396,17 +553,21 @@
             </div>
             
             <div class="instructions" id="instructions">
-                Create three equivalent fractions. Click on the slices to color them, then type the correct fraction in the box.
+                Click on the slices to select them, then type the equivalent fraction in the box. Match the colored slices to the fraction!
             </div>
             
             <div class="visual-area" id="visualArea">
                 <!-- Visuals will be generated here -->
             </div>
             
-            <button class="btn-check" id="checkBtn">Check My Answers ✓</button>
+            <div class="hint" id="hint">
+                💡 Hint: Equivalent fractions have the same value, like 1/2 = 2/4 = 3/6
+            </div>
+            
+            <button class="btn-check" id="checkBtn">Check My Answers 🍴</button>
             
             <div class="feedback" id="feedback">
-                Complete all fractions to check your answers!
+                Select slices and fill in fractions to check your answers!
             </div>
         </div>
         
@@ -415,34 +576,41 @@
         </div>
         
         <footer>
-            <p>Fraction Fun - A fun way to learn equivalent fractions! 🍕🍪</p>
-            <p>Click on slices or images to select them. Fill in the fractions to match the visual.</p>
+            <p>Fraction Feast - A delicious way to learn equivalent fractions! 🍕🍪🍫</p>
+            <p>Click on food slices to select them. Fill in fractions to match what you've selected.</p>
         </footer>
     </div>
 
     <script>
-        // Question database with different base fractions
+        // Food image database
+        const foodImages = {
+            pizza: 'pizza.png',
+            cookie: 'cookie.png',
+            brownie: 'browniepan.png'
+        };
+        
+        // Question database with different base fractions and food types
         const questionDatabase = {
             easy: [
-                { baseFraction: "1/2", denominators: [4, 6, 8], shapes: ["circle", "square", "image"], image: "pizza.png" },
-                { baseFraction: "1/3", denominators: [6, 9, 12], shapes: ["circle", "square", "image"], image: "cookie.png" },
-                { baseFraction: "1/4", denominators: [8, 12, 16], shapes: ["circle", "image", "square"], image: "pizza.png" },
-                { baseFraction: "2/3", denominators: [6, 9, 12], shapes: ["square", "circle", "image"], image: "cookie.png" },
-                { baseFraction: "3/4", denominators: [8, 12, 16], shapes: ["image", "square", "circle"], image: "pizza.png" }
+                { baseFraction: "1/2", denominators: [4, 6, 8], shapes: ["circle", "circle", "square"], foods: ["pizza", "cookie", "brownie"] },
+                { baseFraction: "1/3", denominators: [6, 9, 12], shapes: ["circle", "square", "circle"], foods: ["cookie", "brownie", "pizza"] },
+                { baseFraction: "1/4", denominators: [8, 12, 16], shapes: ["square", "circle", "square"], foods: ["brownie", "pizza", "brownie"] },
+                { baseFraction: "2/3", denominators: [6, 9, 12], shapes: ["circle", "circle", "square"], foods: ["pizza", "cookie", "brownie"] },
+                { baseFraction: "3/4", denominators: [8, 12, 16], shapes: ["square", "circle", "circle"], foods: ["brownie", "pizza", "cookie"] }
             ],
             medium: [
-                { baseFraction: "2/5", denominators: [10, 15, 20], shapes: ["circle", "square", "image"], image: "cookie.png" },
-                { baseFraction: "3/5", denominators: [10, 15, 20], shapes: ["square", "image", "circle"], image: "pizza.png" },
-                { baseFraction: "2/7", denominators: [14, 21, 28], shapes: ["image", "circle", "square"], image: "cookie.png" },
-                { baseFraction: "3/8", denominators: [16, 24, 32], shapes: ["circle", "square", "image"], image: "pizza.png" },
-                { baseFraction: "5/6", denominators: [12, 18, 24], shapes: ["square", "image", "circle"], image: "cookie.png" }
+                { baseFraction: "2/5", denominators: [10, 15, 20], shapes: ["circle", "square", "circle"], foods: ["cookie", "brownie", "pizza"] },
+                { baseFraction: "3/5", denominators: [10, 15, 20], shapes: ["square", "circle", "square"], foods: ["brownie", "pizza", "brownie"] },
+                { baseFraction: "2/7", denominators: [14, 21, 28], shapes: ["circle", "circle", "square"], foods: ["pizza", "cookie", "brownie"] },
+                { baseFraction: "3/8", denominators: [16, 24, 32], shapes: ["square", "circle", "square"], foods: ["brownie", "cookie", "brownie"] },
+                { baseFraction: "5/6", denominators: [12, 18, 24], shapes: ["circle", "square", "circle"], foods: ["pizza", "brownie", "cookie"] }
             ],
             hard: [
-                { baseFraction: "3/7", denominators: [14, 21, 28], shapes: ["circle", "square", "image"], image: "pizza.png" },
-                { baseFraction: "4/9", denominators: [18, 27, 36], shapes: ["square", "image", "circle"], image: "cookie.png" },
-                { baseFraction: "5/11", denominators: [22, 33, 44], shapes: ["image", "circle", "square"], image: "pizza.png" },
-                { baseFraction: "7/12", denominators: [24, 36, 48], shapes: ["circle", "square", "image"], image: "cookie.png" },
-                { baseFraction: "8/15", denominators: [30, 45, 60], shapes: ["square", "image", "circle"], image: "pizza.png" }
+                { baseFraction: "3/7", denominators: [14, 21, 28], shapes: ["circle", "square", "circle"], foods: ["cookie", "brownie", "pizza"] },
+                { baseFraction: "4/9", denominators: [18, 27, 36], shapes: ["square", "circle", "square"], foods: ["brownie", "pizza", "brownie"] },
+                { baseFraction: "5/11", denominators: [22, 33, 44], shapes: ["circle", "circle", "square"], foods: ["pizza", "cookie", "brownie"] },
+                { baseFraction: "7/12", denominators: [24, 36, 48], shapes: ["square", "circle", "square"], foods: ["brownie", "cookie", "brownie"] },
+                { baseFraction: "8/15", denominators: [30, 45, 60], shapes: ["circle", "square", "circle"], foods: ["pizza", "brownie", "cookie"] }
             ]
         };
 
@@ -466,6 +634,7 @@
         const visualAreaEl = document.getElementById('visualArea');
         const feedbackEl = document.getElementById('feedback');
         const progressDotsEl = document.getElementById('progressDots');
+        const hintEl = document.getElementById('hint');
 
         // Initialize the app
         function init() {
@@ -483,6 +652,9 @@
             
             // Initialize progress dots
             updateProgressDots();
+            
+            // Set up image fallbacks in case images don't load
+            setupImageFallbacks();
         }
 
         // Load questions based on difficulty
@@ -522,14 +694,8 @@
             totalQuestionsEl.textContent = totalQuestions;
             baseFractionEl.textContent = question.baseFraction;
             
-            // Update instructions based on shapes
-            const shapeNames = question.shapes.map(shape => {
-                if (shape === 'circle') return 'circle';
-                if (shape === 'square') return 'square';
-                return 'image';
-            });
-            
-            instructionsEl.textContent = `Create three equivalent fractions. Click on the ${shapeNames.join(', ')} to color them, then type the correct fraction in the box.`;
+            // Update hint based on difficulty
+            updateHint();
             
             // Clear previous visuals
             visualAreaEl.innerHTML = '';
@@ -540,11 +706,13 @@
             // Create visual items for each denominator
             question.denominators.forEach((denominator, i) => {
                 const shapeType = question.shapes[i];
+                const foodType = question.foods[i];
                 const expectedNumerator = (baseNum * denominator) / baseDen;
                 
                 // Create fraction item container
                 const fractionItem = document.createElement('div');
                 fractionItem.className = 'fraction-item';
+                fractionItem.dataset.index = i;
                 
                 // Create title
                 const title = document.createElement('h3');
@@ -555,22 +723,48 @@
                 const shapeContainer = document.createElement('div');
                 shapeContainer.className = 'shape-container';
                 
+                // Create food label
+                const foodLabel = document.createElement('div');
+                foodLabel.className = 'food-label';
+                foodLabel.textContent = getFoodName(foodType);
+                shapeContainer.appendChild(foodLabel);
+                
                 // Create the appropriate visual based on shape type
                 if (shapeType === 'circle') {
-                    shapeContainer.innerHTML = createCircleVisual(denominator);
+                    // Create background image
+                    const bgDiv = document.createElement('div');
+                    bgDiv.className = 'circle-bg';
+                    bgDiv.style.backgroundImage = `url('${foodImages[foodType]}')`;
+                    shapeContainer.appendChild(bgDiv);
+                    
+                    // Create SVG overlay
+                    shapeContainer.innerHTML += createCircleVisual(denominator);
                 } else if (shapeType === 'square') {
-                    shapeContainer.innerHTML = createSquareVisual(denominator);
-                } else {
-                    shapeContainer.innerHTML = createImageVisual(denominator, question.image);
+                    // Create background image
+                    const bgDiv = document.createElement('div');
+                    bgDiv.className = 'square-bg';
+                    bgDiv.style.backgroundImage = `url('${foodImages[foodType]}')`;
+                    shapeContainer.appendChild(bgDiv);
+                    
+                    // Create SVG overlay
+                    shapeContainer.innerHTML += createSquareVisual(denominator);
                 }
                 
                 fractionItem.appendChild(shapeContainer);
                 
                 // Create input for fraction
+                const inputContainer = document.createElement('div');
+                inputContainer.className = 'fraction-input-container';
+                
+                const inputLabel = document.createElement('div');
+                inputLabel.className = 'fraction-input-label';
+                inputLabel.textContent = 'Fraction:';
+                inputContainer.appendChild(inputLabel);
+                
                 const input = document.createElement('input');
                 input.type = 'text';
                 input.className = 'fraction-input';
-                input.placeholder = `? / ${denominator}`;
+                input.placeholder = `?/${denominator}`;
                 input.dataset.index = i;
                 input.dataset.denominator = denominator;
                 input.dataset.expected = `${expectedNumerator}/${denominator}`;
@@ -583,12 +777,22 @@
                     }
                 }
                 
-                fractionItem.appendChild(input);
+                inputContainer.appendChild(input);
+                fractionItem.appendChild(inputContainer);
                 
-                // Add click handlers for slices/cells
-                setTimeout(() => {
-                    if (shapeType === 'circle' || shapeType === 'square') {
-                        const slices = shapeContainer.querySelectorAll('.slice, .square-slice');
+                visualAreaEl.appendChild(fractionItem);
+            });
+            
+            // Add click handlers for slices
+            setTimeout(() => {
+                const fractionItems = document.querySelectorAll('.fraction-item');
+                
+                fractionItems.forEach((item, i) => {
+                    const shapeType = question.shapes[i];
+                    const denominator = question.denominators[i];
+                    
+                    if (shapeType === 'circle') {
+                        const slices = item.querySelectorAll('.slice');
                         slices.forEach((slice, sliceIndex) => {
                             slice.addEventListener('click', () => {
                                 handleSliceClick(slice, sliceIndex, i, index, denominator, shapeType);
@@ -601,28 +805,27 @@
                                 slice.classList.add('active');
                             }
                         });
-                    } else {
-                        const cells = shapeContainer.querySelectorAll('.image-cell');
-                        cells.forEach((cell, cellIndex) => {
-                            cell.addEventListener('click', () => {
-                                handleImageCellClick(cell, cellIndex, i, index, denominator);
+                    } else if (shapeType === 'square') {
+                        const slices = item.querySelectorAll('.square-slice');
+                        slices.forEach((slice, sliceIndex) => {
+                            slice.addEventListener('click', () => {
+                                handleSliceClick(slice, sliceIndex, i, index, denominator, shapeType);
                             });
                             
                             // Restore previous visual state
                             if (userAnswers[index] && 
                                 userAnswers[index].visuals[i] && 
-                                userAnswers[index].visuals[i].includes(cellIndex)) {
-                                cell.classList.add('active');
+                                userAnswers[index].visuals[i].includes(sliceIndex)) {
+                                slice.classList.add('active');
                             }
                         });
                     }
                     
                     // Add input handler
+                    const input = item.querySelector('.fraction-input');
                     input.addEventListener('input', () => handleInputChange(input, i, index, denominator));
-                }, 10);
-                
-                visualAreaEl.appendChild(fractionItem);
-            });
+                });
+            }, 10);
             
             // Update feedback based on current state
             updateFeedback(index);
@@ -636,7 +839,7 @@
 
         // Create circle visual with SVG
         function createCircleVisual(denominator) {
-            const size = 140;
+            const size = 200;
             const radius = size / 2;
             const center = radius;
             
@@ -670,9 +873,24 @@
 
         // Create square visual with SVG
         function createSquareVisual(denominator) {
-            const size = 140;
-            const rows = Math.ceil(Math.sqrt(denominator));
-            const cols = Math.ceil(denominator / rows);
+            const size = 200;
+            
+            // Determine grid layout for the square
+            let rows, cols;
+            if (denominator <= 4) {
+                rows = 1;
+                cols = denominator;
+            } else if (denominator <= 9) {
+                rows = 3;
+                cols = Math.ceil(denominator / 3);
+            } else if (denominator <= 16) {
+                rows = 4;
+                cols = Math.ceil(denominator / 4);
+            } else {
+                rows = 5;
+                cols = Math.ceil(denominator / 5);
+            }
+            
             const cellWidth = size / cols;
             const cellHeight = size / rows;
             
@@ -705,39 +923,6 @@
             `;
         }
 
-        // Create image grid visual
-        function createImageVisual(denominator, imageName) {
-            // Determine grid layout
-            let rows, cols;
-            if (denominator <= 4) {
-                rows = 1;
-                cols = denominator;
-            } else if (denominator <= 9) {
-                rows = 3;
-                cols = Math.ceil(denominator / 3);
-            } else {
-                rows = 4;
-                cols = Math.ceil(denominator / 4);
-            }
-            
-            // Create grid CSS
-            const gridStyle = `grid-template-columns: repeat(${cols}, 1fr); grid-template-rows: repeat(${rows}, 1fr);`;
-            
-            // Create image cells
-            let cellsHTML = '';
-            const imageUrl = imageName || 'pizza.png';
-            
-            for (let i = 0; i < denominator; i++) {
-                cellsHTML += `<div class="image-cell" data-index="${i}" style="background-image: url('${imageUrl}')"></div>`;
-            }
-            
-            return `
-                <div class="image-grid" style="${gridStyle}">
-                    ${cellsHTML}
-                </div>
-            `;
-        }
-
         // Handle slice clicks (for circles and squares)
         function handleSliceClick(slice, sliceIndex, visualIndex, questionIndex, denominator, shapeType) {
             // Toggle active state
@@ -767,46 +952,8 @@
             visualAnswers.sort((a, b) => a - b);
             
             // Update the corresponding input field
-            const input = document.querySelector(`.fraction-input[data-index="${visualIndex}"]`);
-            if (input) {
-                input.value = visualAnswers.length > 0 ? `${visualAnswers.length}/${denominator}` : '';
-                handleInputChange(input, visualIndex, questionIndex, denominator);
-            }
-            
-            // Update feedback
-            updateFeedback(questionIndex);
-        }
-
-        // Handle image cell clicks
-        function handleImageCellClick(cell, cellIndex, visualIndex, questionIndex, denominator) {
-            // Toggle active state
-            cell.classList.toggle('active');
-            
-            // Initialize user answers for this question if needed
-            if (!userAnswers[questionIndex]) {
-                userAnswers[questionIndex] = { inputs: [], visuals: [] };
-            }
-            if (!userAnswers[questionIndex].visuals[visualIndex]) {
-                userAnswers[questionIndex].visuals[visualIndex] = [];
-            }
-            
-            // Update user's visual answer
-            const visualAnswers = userAnswers[questionIndex].visuals[visualIndex];
-            const indexInArray = visualAnswers.indexOf(cellIndex);
-            
-            if (indexInArray > -1) {
-                // Remove from array if already selected
-                visualAnswers.splice(indexInArray, 1);
-            } else {
-                // Add to array if not selected
-                visualAnswers.push(cellIndex);
-            }
-            
-            // Sort the array
-            visualAnswers.sort((a, b) => a - b);
-            
-            // Update the corresponding input field
-            const input = document.querySelector(`.fraction-input[data-index="${visualIndex}"]`);
+            const fractionItem = document.querySelector(`.fraction-item[data-index="${visualIndex}"]`);
+            const input = fractionItem.querySelector('.fraction-input');
             if (input) {
                 input.value = visualAnswers.length > 0 ? `${visualAnswers.length}/${denominator}` : '';
                 handleInputChange(input, visualIndex, questionIndex, denominator);
@@ -835,11 +982,16 @@
             // Parse the user's input
             let userNum, userDen;
             if (value.includes('/')) {
-                [userNum, userDen] = value.split('/').map(part => parseInt(part.trim()));
-            } else {
+                const parts = value.split('/');
+                userNum = parseInt(parts[0].trim());
+                userDen = parseInt(parts[1].trim());
+            } else if (value) {
                 // Try to parse as just numerator
                 userNum = parseInt(value);
                 userDen = denominator;
+            } else {
+                userNum = NaN;
+                userDen = NaN;
             }
             
             // Check if input is valid
@@ -893,10 +1045,15 @@
                 // Parse the input
                 let userNum, userDen;
                 if (input.includes('/')) {
-                    [userNum, userDen] = input.split('/').map(part => parseInt(part.trim()));
-                } else {
+                    const parts = input.split('/');
+                    userNum = parseInt(parts[0].trim());
+                    userDen = parseInt(parts[1].trim());
+                } else if (input) {
                     userNum = parseInt(input);
                     userDen = question.denominators[i];
+                } else {
+                    userNum = NaN;
+                    userDen = NaN;
                 }
                 
                 // Check if equivalent
@@ -913,7 +1070,7 @@
             
             // Update feedback message
             if (allCorrect) {
-                feedbackEl.textContent = '🎉 Excellent! All fractions are correct! You can move to the next question.';
+                feedbackEl.innerHTML = '🎉 Perfect! All fractions are correct! You can move to the next question. 🍰';
                 feedbackEl.className = 'feedback correct';
                 
                 // Mark question as completed
@@ -922,13 +1079,13 @@
                 // Enable next button
                 nextBtn.disabled = false;
             } else if (allAnswered) {
-                feedbackEl.textContent = 'Not quite right. Check your fractions and try again!';
+                feedbackEl.innerHTML = '🤔 Not quite right. Check your fractions and try again!';
                 feedbackEl.className = 'feedback incorrect';
                 
                 // Disable next button
                 nextBtn.disabled = true;
             } else {
-                feedbackEl.textContent = 'Complete all fractions to check your answers!';
+                feedbackEl.innerHTML = 'Select slices and fill in fractions to check your answers!';
                 feedbackEl.className = 'feedback';
                 
                 // Disable next button
@@ -936,10 +1093,37 @@
             }
             
             // Update check button text
-            checkBtn.textContent = allAnswered ? 'Check Again ✓' : 'Check My Answers ✓';
+            checkBtn.textContent = allAnswered ? 'Check Again 🍴' : 'Check My Answers 🍴';
             
             // Update progress dots
             updateProgressDots();
+        }
+
+        // Update hint based on difficulty
+        function updateHint() {
+            const question = questions[currentQuestionIndex];
+            const [baseNum, baseDen] = question.baseFraction.split('/').map(Number);
+            
+            let hintText = '';
+            if (currentDifficulty === 'easy') {
+                hintText = `💡 Hint: To find equivalent fractions, multiply both numerator and denominator by the same number. For ${baseFractionEl.textContent}, try multiplying by 2, 3, or 4.`;
+            } else if (currentDifficulty === 'medium') {
+                hintText = `💡 Hint: ${baseFractionEl.textContent} is ${(baseNum/baseDen).toFixed(2)} of the whole. Find fractions with the same value.`;
+            } else {
+                hintText = `💡 Challenge: Can you find three different ways to represent ${baseFractionEl.textContent}?`;
+            }
+            
+            hintEl.textContent = hintText;
+        }
+
+        // Get food name for display
+        function getFoodName(foodType) {
+            const foodNames = {
+                pizza: '🍕 Pizza',
+                cookie: '🍪 Cookie',
+                brownie: '🍫 Brownie Pan'
+            };
+            return foodNames[foodType] || foodType;
         }
 
         // Check all answers
@@ -980,25 +1164,46 @@
             
             for (let i = 0; i < totalQuestions; i++) {
                 const dot = document.createElement('div');
-                dot.className = 'progress-dot';
                 
                 if (i === currentQuestionIndex) {
-                    dot.classList.add('active');
+                    dot.className = 'progress-dot active';
                 } else if (completedQuestions.has(i)) {
-                    dot.classList.add('completed');
+                    dot.className = 'progress-dot completed';
+                } else if (i === 0 || completedQuestions.has(i-1)) {
+                    dot.className = 'progress-dot unlocked';
+                } else {
+                    dot.className = 'progress-dot';
                 }
                 
                 // Make dot clickable
                 dot.addEventListener('click', () => {
-                    if (completedQuestions.has(i) || i === 0) {
-                        displayQuestion(i);
-                    } else if (completedQuestions.has(i-1)) {
+                    if (completedQuestions.has(i) || i === 0 || completedQuestions.has(i-1)) {
                         displayQuestion(i);
                     }
                 });
                 
                 progressDotsEl.appendChild(dot);
             }
+        }
+
+        // Set up image fallbacks
+        function setupImageFallbacks() {
+            // If images don't exist, use colored backgrounds instead
+            const imageFallbacks = {
+                'pizza.png': '#ff8a65',
+                'cookie.png': '#d7ccc8',
+                'browniepan.png': '#8d6e63'
+            };
+            
+            // Check if images exist
+            Object.entries(foodImages).forEach(([food, filename]) => {
+                const img = new Image();
+                img.onerror = function() {
+                    console.log(`Image ${filename} not found, using fallback color`);
+                    // We'll handle this dynamically when creating visuals
+                };
+                img.src = filename;
+            });
         }
 
         // Initialize the app when DOM is loaded
