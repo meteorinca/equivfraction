@@ -47,7 +47,7 @@
             max-width: 1000px;
             width: 95%;
             margin: 20px auto;
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.95);
             padding: 30px;
             border-radius: 25px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
@@ -71,11 +71,10 @@
             padding: 20px;
             border-radius: 20px;
             border: 3px solid #eee;
-            transition: transform 0.2s;
+            transition: all 0.2s;
             position: relative;
         }
 
-        /* SVG & Image Container */
         .shape-container {
             width: 200px;
             height: 200px;
@@ -83,7 +82,8 @@
             position: relative;
             background-size: cover;
             background-position: center;
-            border-radius: 50%; /* Default for circles */
+            border-radius: 50%;
+            overflow: visible; /* Ensure SVG can be seen */
         }
 
         .shape-container.square {
@@ -94,20 +94,27 @@
             position: absolute;
             top: 0;
             left: 0;
+            z-index: 10; /* Force to front */
             cursor: pointer;
+            overflow: visible;
         }
 
         /* Slice Styling */
         .slice {
-            fill: rgba(255, 255, 255, 0.4);
-            stroke: rgba(0,0,0,0.3);
-            stroke-width: 2;
+            fill: rgba(255, 255, 255, 0.2); /* Very light so image shows through */
+            stroke: rgba(0,0,0,0.6);
+            stroke-width: 1.5;
             transition: all 0.2s;
+            pointer-events: all !important; /* CRITICAL FIX */
+        }
+
+        .slice:hover {
+            fill: rgba(255, 255, 255, 0.5);
         }
 
         .slice.active {
-            fill: rgba(255, 215, 0, 0.6); /* Golden highlight */
-            stroke: #f39c12;
+            fill: rgba(255, 215, 0, 0.7) !important; /* Golden color */
+            stroke: #d35400;
             stroke-width: 3;
         }
 
@@ -158,7 +165,6 @@
             font-weight: bold;
         }
 
-        .btn-prev { background: #bdc3c7; color: white; }
         .btn-check { background: var(--success); color: white; }
         .btn-next { background: var(--primary); color: white; opacity: 0.5; cursor: not-allowed; }
         .btn-next.enabled { opacity: 1; cursor: pointer; }
@@ -168,7 +174,8 @@
 
         #feedback-msg {
             margin-top: 20px;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
+            font-weight: bold;
             height: 30px;
         }
     </style>
@@ -176,13 +183,13 @@
 <body>
 
 <div class="header">
-    <h1>🍕 Fraction Chef</h1>
+    <h1 id="rank-display">🍕 Kitchen Helper</h1>
     <div>
         Difficulty: 
         <select class="difficulty-select" id="diff-select" onchange="initGame()">
-            <option value="easy">Easy (Halves/Quarters)</option>
-            <option value="medium">Medium (Thirds/Sixths)</option>
-            <option value="hard">Hard (Mixed Challenges)</option>
+            <option value="easy">Easy (1/2, 1/4)</option>
+            <option value="medium">Medium (1/3, 1/6)</option>
+            <option value="hard">Hard (Any Denominator)</option>
         </select>
     </div>
 </div>
@@ -190,37 +197,34 @@
 <div class="app-container">
     <div id="game-stage">
         <div class="question-text" id="target-text"></div>
-        <div class="visual-grid" id="visual-grid">
-            </div>
+        <div class="visual-grid" id="visual-grid"></div>
     </div>
 
     <div id="feedback-msg"></div>
 
     <div class="controls">
-        <button class="btn-prev" onclick="changeQuestion(-1)">Back</button>
         <button class="btn-check" onclick="validate()">Check My Cooking!</button>
-        <button class="btn-next" id="next-btn" onclick="changeQuestion(1)" disabled>Next Order</button>
+        <button class="btn-next" id="next-btn" onclick="initGame()" disabled>Next Order</button>
     </div>
 </div>
 
 <script>
     const diffSettings = {
-        easy: { base: [1, 2], denominators: [2, 4, 8] },
-        medium: { base: [1, 2, 3], denominators: [3, 6, 9, 12] },
-        hard: { base: [1, 2, 3, 4, 5], denominators: [4, 5, 8, 10, 12, 16] }
+        easy: { denominators: [2, 4, 8] },
+        medium: { denominators: [3, 6, 9, 12] },
+        hard: { denominators: [4, 5, 8, 10, 12, 15, 16] }
     };
 
     const assets = [
-        { type: 'circle', img: 'pizza.png', color: '#f1c40f' },
-        { type: 'circle', img: 'cookie.png', color: '#8e44ad' },
-        { type: 'square', img: 'browniepan.png', color: '#e67e22' }
+        { type: 'circle', img: 'pizza.png' },
+        { type: 'circle', img: 'cookie.png' },
+        { type: 'square', img: 'browniepan.png' }
     ];
 
     let currentQuestion = {};
-    let isCorrect = false;
+    let score = 0;
 
     function initGame() {
-        isCorrect = false;
         document.getElementById('next-btn').disabled = true;
         document.getElementById('next-btn').classList.remove('enabled');
         document.getElementById('feedback-msg').innerHTML = "";
@@ -229,18 +233,14 @@
 
     function generateRandomQuestion() {
         const diff = document.getElementById('diff-select').value;
-        const settings = diffSettings[diff];
+        const denoms = diffSettings[diff].denominators;
         
-        // Pick a base fraction
-        const denoms = settings.denominators;
+        // Pick a base denominator and a target numerator
         const d1 = denoms[Math.floor(Math.random() * denoms.length)];
         const n1 = Math.ceil(Math.random() * (d1 - 1));
-        
         const ratio = n1 / d1;
 
-        // Find two other denominators that work for this ratio
-        // If none found, we just pick 2 random ones and the kid has to figure out they aren't possible? 
-        // No, for learning, we find valid equivalents.
+        // Find denominators that support this ratio
         let possibleEquivs = [];
         for(let i=2; i<=16; i++) {
             if ((i * ratio) % 1 === 0 && i !== d1) {
@@ -248,17 +248,17 @@
             }
         }
 
-        // Shuffle and pick 2
+        // Shuffle and pick 2 alternatives. If none, double/triple the base.
         possibleEquivs.sort(() => 0.5 - Math.random());
         const d2 = possibleEquivs[0] || d1 * 2;
-        const d3 = possibleEquivs[1] || d1 * 3;
+        const d3 = possibleEquivs[1] || (possibleEquivs[0] ? possibleEquivs[1] : d1 * 3);
 
         currentQuestion = {
             target: { n: n1, d: d1 },
             options: [
                 { d: d1, n_correct: n1 },
-                { d: d2, n_correct: (n1/d1) * d2 },
-                { d: d3, n_correct: (n1/d1) * d3 }
+                { d: d2, n_correct: Math.round(ratio * d2) },
+                { d: d3, n_correct: Math.round(ratio * d3) }
             ]
         };
 
@@ -267,10 +267,8 @@
 
     function renderQuestion() {
         const grid = document.getElementById('visual-grid');
-        const targetText = document.getElementById('target-text');
+        document.getElementById('target-text').innerHTML = `Chef! Prepare 3 trays that equal <strong>${currentQuestion.target.n}/${currentQuestion.target.d}</strong>`;
         grid.innerHTML = "";
-
-        targetText.innerHTML = `Chef! Can you prepare these three trays so they all equal <strong>${currentQuestion.target.n}/${currentQuestion.target.d}</strong>?`;
 
         currentQuestion.options.forEach((opt, index) => {
             const asset = assets[index % assets.length];
@@ -280,15 +278,14 @@
 
             const shapeContainer = document.createElement('div');
             shapeContainer.className = `shape-container ${asset.type}`;
-            // If the image doesn't exist, it will just show the background color
             shapeContainer.style.backgroundImage = `url('${asset.img}')`;
-            shapeContainer.style.backgroundColor = '#ddd'; 
+            shapeContainer.style.backgroundColor = '#f3e5ab'; // Fallback color
 
             const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
             svg.setAttribute("viewBox", "0 0 100 100");
+            svg.setAttribute("class", "fraction-overlay");
             svg.setAttribute("width", "200");
             svg.setAttribute("height", "200");
-            svg.setAttribute("class", "fraction-overlay");
 
             if(asset.type === 'circle') {
                 createCircleSlices(svg, opt.d);
@@ -297,11 +294,8 @@
             }
 
             shapeContainer.appendChild(svg);
-            
-            card.innerHTML = `
-                <h3>Tray ${index + 1}</h3>
-            `;
             card.appendChild(shapeContainer);
+            
             card.innerHTML += `
                 <div class="input-group">
                     <input type="number" class="fraction-input" id="input-${index}" placeholder="?">
@@ -313,63 +307,56 @@
             grid.appendChild(card);
         });
     }
-function createCircleSlices(svg, den) {
-    const centerX = 50, centerY = 50, radius = 50;
-    // Clear existing slices
-    svg.innerHTML = ''; 
-    for (let i = 0; i < den; i++) {
-        const startAngle = (i * 2 * Math.PI) / den;
-        const endAngle = ((i + 1) * 2 * Math.PI) / den;
-        const x1 = centerX + radius * Math.cos(startAngle - Math.PI/2);
-        const y1 = centerY + radius * Math.sin(startAngle - Math.PI/2);
-        const x2 = centerX + radius * Math.cos(endAngle - Math.PI/2);
-        const y2 = centerY + radius * Math.sin(endAngle - Math.PI/2);
-        
-        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-        path.setAttribute("d", `M 50 50 L ${x1} ${y1} A 50 50 0 0 1 ${x2} ${y2} Z`);
-        path.setAttribute("class", "slice");
-        // FIX: Ensure pointer events are captured
-        path.style.pointerEvents = "auto";
-        path.onclick = function(e) {
-            e.stopPropagation();
-            this.classList.toggle('active');
-        };
-        svg.appendChild(path);
-    }
-}
 
-function createSquareSlices(svg, den) {
-    svg.innerHTML = '';
-    let cols = Math.ceil(Math.sqrt(den));
-    // Ensure we don't have empty rows
-    if (den === 6) { cols = 3; } 
-    if (den === 8) { cols = 4; }
-    
-    let rows = Math.ceil(den / cols);
-    const w = 100 / cols;
-    const h = 100 / rows;
-
-    for (let i = 0; i < den; i++) {
-        const r = Math.floor(i / cols);
-        const c = i % cols;
-        const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-        rect.setAttribute("x", c * w);
-        rect.setAttribute("y", r * h);
-        rect.setAttribute("width", w);
-        rect.setAttribute("height", h);
-        rect.setAttribute("class", "slice");
-        rect.style.pointerEvents = "auto";
-        rect.onclick = function(e) {
-            e.stopPropagation();
-            this.classList.toggle('active');
-        };
-        svg.appendChild(rect);
+    function createCircleSlices(svg, den) {
+        const centerX = 50, centerY = 50, radius = 50;
+        for (let i = 0; i < den; i++) {
+            const sA = (i * 2 * Math.PI) / den - Math.PI/2;
+            const eA = ((i + 1) * 2 * Math.PI) / den - Math.PI/2;
+            const x1 = centerX + radius * Math.cos(sA);
+            const y1 = centerY + radius * Math.sin(sA);
+            const x2 = centerX + radius * Math.cos(eA);
+            const y2 = centerY + radius * Math.sin(eA);
+            
+            const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            path.setAttribute("d", `M 50 50 L ${x1} ${y1} A 50 50 0 0 1 ${x2} ${y2} Z`);
+            path.setAttribute("class", "slice");
+            path.addEventListener('click', function(e) {
+                this.classList.toggle('active');
+            });
+            svg.appendChild(path);
+        }
     }
-}
+
+    function createSquareSlices(svg, den) {
+        let cols = Math.ceil(Math.sqrt(den));
+        if (den === 6) cols = 3;
+        if (den === 8) cols = 4;
+        if (den === 10) cols = 5;
+        if (den === 12) cols = 4;
+
+        const rows = Math.ceil(den / cols);
+        const w = 100 / cols;
+        const h = 100 / rows;
+
+        for (let i = 0; i < den; i++) {
+            const r = Math.floor(i / cols);
+            const c = i % cols;
+            const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+            rect.setAttribute("x", c * w);
+            rect.setAttribute("y", r * h);
+            rect.setAttribute("width", w);
+            rect.setAttribute("height", h);
+            rect.setAttribute("class", "slice");
+            rect.addEventListener('click', function(e) {
+                this.classList.toggle('active');
+            });
+            svg.appendChild(rect);
+        }
+    }
 
     function validate() {
         let allCorrect = true;
-        
         currentQuestion.options.forEach((opt, i) => {
             const inputVal = parseInt(document.getElementById(`input-${i}`).value);
             const card = document.getElementById(`card-${i}`);
@@ -385,25 +372,27 @@ function createSquareSlices(svg, den) {
 
         const feedback = document.getElementById('feedback-msg');
         if (allCorrect) {
-            feedback.innerHTML = "🎉 Delicious! You got them all correct!";
+            feedback.innerHTML = "🌟 Perfect Service! You earned a Star!";
             feedback.style.color = "var(--success)";
             document.getElementById('next-btn').disabled = false;
             document.getElementById('next-btn').classList.add('enabled');
+            updateRank();
         } else {
-            feedback.innerHTML = "Hmm, the trays don't match. Check your math and your slices!";
+            feedback.innerHTML = "Chef, some trays don't look right. Double check!";
             feedback.style.color = "#e74c3c";
         }
     }
 
-    function changeQuestion(dir) {
-        // For a true "Previous" system, you could store a history array.
-        // For now, it simply generates a fresh challenge.
-        initGame();
+    function updateRank() {
+        score++;
+        let rank = "Kitchen Helper";
+        if (score > 3) rank = "Pizza Apprentice";
+        if (score > 7) rank = "Pastry Sous Chef";
+        if (score > 12) rank = "Master Fraction Chef";
+        document.getElementById('rank-display').innerHTML = `🍕 ${rank} (Level ${score})`;
     }
 
-    // Start on load
     window.onload = initGame;
 </script>
-
 </body>
 </html>
